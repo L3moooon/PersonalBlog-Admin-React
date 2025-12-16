@@ -1,85 +1,145 @@
+import { useState } from 'react';
+import { createStyles } from 'antd-style';
+import { clsx } from 'clsx';
 import {
   Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-// import SlideCaptcha from './subComponent/SlideCaptcha.vue';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  Space,
+  type FormProps,
+} from 'antd';
+import welcomeImg from '@/assets/images/welcome-en.png';
 
-import { useState } from 'react';
-
-interface LoginByAccountProps {
-  onChangePage: (type: PageType) => void; // 匹配父组件传递的函数类型
-}
-
+const useHeaderStyles = createStyles(() => ({
+  header: {
+    width: '100%',
+    padding: '0 1.5rem',
+    position: 'relative',
+  },
+  title: {
+    margin: '0',
+    fontSize: '2.25rem',
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: '0.8rem',
+    color: '#737373',
+    marginTop: '0.5rem',
+  },
+  welcomeImg: {
+    position: 'absolute',
+    right: '1.5rem',
+    top: 0,
+    width: '6rem',
+  },
+}));
 const HeaderSection = () => {
+  const { styles } = useHeaderStyles();
   return (
-    <CardHeader className="relative">
-      <CardTitle className="text-4xl font-bold flex items-center">
-        欢迎回来
-      </CardTitle>
-      <CardDescription>输入您的账户信息以开始管理您的博客</CardDescription>
-      <img
-        className="w-24 absolute top-0 right-4"
-        src="@/assets/images/welcome-en.png"
-        alt=""
-      />
-    </CardHeader>
+    <div className={styles.header}>
+      <div className={clsx(styles.title, 'flex-vertical-center')}>欢迎回来</div>
+      <div className={styles.text}>输入您的账户信息以开始管理您的博客</div>
+      <img className={styles.welcomeImg} src={welcomeImg} alt="" />
+    </div>
   );
 };
-
+type FieldType = {
+  username?: string;
+  password?: string;
+  remember?: string;
+};
+const useContentStyles = createStyles(() => ({
+  content: {
+    width: '100%',
+    overflow: 'hidden',
+    padding: '0.8rem',
+  },
+  welcomeImg: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    // width: '0.1rem',
+  },
+}));
 const ContentSection = () => {
+  const { styles } = useContentStyles();
+  const onFinish: FormProps<FieldType>['onFinish'] = values => {
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
   return (
-    <CardContent>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>用户名</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormDescription>这是你的公开显示名称。</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">提交</Button>
-        </form>
+    <div className={clsx(styles.content, 'flex-center')}>
+      <Form
+        className={styles.content}
+        name="basic"
+        layout="vertical"
+        requiredMark={false}
+        labelCol={{ span: 12 }}
+        wrapperCol={{ span: 24 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item<FieldType>
+          label="账号"
+          name="username"
+          rules={[{ required: true, message: '账号不能为空' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          label="密码"
+          name="password"
+          rules={[{ required: true, message: '密码不能为空' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          name="remember"
+          valuePropName="checked"
+          label={null}
+        >
+          <Checkbox>记住账号</Checkbox>
+        </Form.Item>
+
+        <Form.Item label={null}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
       </Form>
-    </CardContent>
+    </div>
   );
 };
 
 const FooterSection = () => {
-  return <CardFooter className="block px-6"></CardFooter>;
+  return <div>底部</div>;
 };
-const LoginByAccount = ({ onChangePage }) => {
-  const form = useForm();
+
+const useRootStyles = createStyles(() => ({
+  root: {
+    padding: '10% 15%',
+    borderRadius: '1rem',
+    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+  },
+}));
+const LoginByAccount = () => {
+  const { styles } = useRootStyles();
   return (
-    <Card className="w-full px-[15%] py-[10%] opacity-90 absolute left-0 top-0">
+    <div className={styles.root}>
       <HeaderSection />
       <ContentSection />
       <FooterSection />
-    </Card>
+    </div>
   );
 };
-
 export default LoginByAccount;

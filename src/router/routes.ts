@@ -12,7 +12,7 @@ export interface RouteItem {
 export const routes: RouteItem[] = [
   {
     path: '/',
-    element: lazy(() => import('@/layouts/auth/AuthIndex')),
+    element: lazy(() => import('@/layouts/auth')),
     title: '登录',
   },
   {
