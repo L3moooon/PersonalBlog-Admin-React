@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createStyles } from 'antd-style';
-import { clsx } from 'clsx';
+import { Flex } from 'antd';
 import LoginByAccount from './login/LoginByAccount';
 import backgroundImg from '@/assets/images/background.png';
 
@@ -32,14 +32,14 @@ const BasicIndex = () => {
   };
 
   return (
-    <div className={clsx(styles.root, 'flex-center')}>
+    <Flex justify="center" align="center" className={styles.root}>
       <div className={styles.cardContainer}>
         {pageType == 'account' && <LoginByAccount />}
         {/* {pageType == 'mail' && <LoginByMail />}
         {pageType == 'phone' && <LoginByQRcode />}
         {pageType == 'forget' && <ForgetPassword />} */}
       </div>
-    </div>
+    </Flex>
   );
 };
 
