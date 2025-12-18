@@ -4,25 +4,29 @@ import { lazy, type LazyExoticComponent, type ComponentType } from 'react';
 export interface RouteItem {
   path: string;
   element: LazyExoticComponent<ComponentType<unknown>>;
-  title: string;
   requiresAuth?: boolean;
   children?: RouteItem[];
+  meta?: {
+    title?: string; // 菜单名称
+    requiresAuth: boolean; // 是否需要权限
+    permission?: string; // 所需权限标识（如 "user:list"）
+  };
 }
 
 export const routes: RouteItem[] = [
   {
     path: '/',
     element: lazy(() => import('@/layouts/auth')),
-    title: '登录',
+    meta: { requiresAuth: false, title: '登录' },
   },
   {
     path: '/home',
     element: lazy(() => import('@/layouts/basic/BasicIndex')),
-    title: '首页',
+    meta: { requiresAuth: false, title: '首页', permission: '' },
   },
   {
     path: '*',
     element: lazy(() => import('@/layouts/default/NotFound')),
-    title: '页面不存在',
+    meta: { requiresAuth: false, title: '页面不存在' },
   },
 ];

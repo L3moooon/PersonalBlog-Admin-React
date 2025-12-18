@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { createStyles } from 'antd-style';
 import { Flex } from 'antd';
+import { PageTypeProvider } from './context/PageTypeContext';
+
 import LoginByAccount from './login/LoginByAccount';
+import LoginByEmail from './login/LoginByEmail';
+import LoginByQRcode from './login/LoginByQRcode';
+import ForgetPassword from './forget/ForgetPassword';
 import backgroundImg from '@/assets/images/background.png';
 
-type PageType = 'account' | 'mail' | 'phone' | 'forget' | 'reset';
+type PageType = 'account' | 'mail' | 'phone' | 'forget' | 'reset' | 'register';
 
 const useStyles = createStyles(() => ({
   root: {
@@ -20,27 +25,28 @@ const useStyles = createStyles(() => ({
     opacity: 0.9,
   },
 }));
-
-const BasicIndex = () => {
+const AuthIndex = () => {
   const [pageType, setPageType] = useState<PageType>('account');
-  // 引入样式类名
   const { styles } = useStyles();
 
-  // 改变页面类型
   const handleUpdatePageType = (type: PageType) => {
     setPageType(type);
   };
 
   return (
-    <Flex justify="center" align="center" className={styles.root}>
-      <div className={styles.cardContainer}>
-        {pageType == 'account' && <LoginByAccount />}
-        {/* {pageType == 'mail' && <LoginByMail />}
-        {pageType == 'phone' && <LoginByQRcode />}
-        {pageType == 'forget' && <ForgetPassword />} */}
-      </div>
-    </Flex>
+    <PageTypeProvider onUpdatePageType={handleUpdatePageType}>
+      <Flex justify="center" align="center" className={styles.root}>
+        <div className={styles.cardContainer}>
+          {pageType == 'account' && <LoginByAccount />}
+          {pageType == 'mail' && <LoginByEmail />}
+          {pageType == 'phone' && <LoginByQRcode />}
+          {pageType == 'forget' && <ForgetPassword />}
+          {/* {pageType == 'reset' && <ForgetPassword />}
+          {pageType == 'register' && <ForgetPassword />} */}
+        </div>
+      </Flex>
+    </PageTypeProvider>
   );
 };
 
-export default BasicIndex;
+export default AuthIndex;

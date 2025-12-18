@@ -5,13 +5,22 @@ import {
   Checkbox,
   Form,
   Input,
-  Space,
+  message,
   type FormProps,
 } from 'antd';
+import { usePageType } from '../context/PageTypeContext';
+import { useState, useEffect } from 'react';
+import { login } from '@/api/auth';
+import SlideCaptcha from '@/components/SlideCaptcha';
 import welcomeImg from '@/assets/images/welcome-en.png';
+
+import { useDispatch, useSelector } from 'react-redux'; // 导入 Hooks
+import { type RootState, type AppDispatch } from '@/store'; // 导入类型
+import { setUserInfo, toggleRemember } from '@/store/slices/userSlice';
 
 const useHeaderStyles = createStyles(() => ({
   header: {
+    userSelect: 'none',
     width: '100%',
     padding: '0 1.5rem',
     position: 'relative',
@@ -44,51 +53,106 @@ const HeaderSection = () => {
   );
 };
 type FieldType = {
-  username?: string;
-  password?: string;
-  captcha?: boolean;
-  remember?: string;
+  account: string;
+  password: string;
+  captcha: boolean;
 };
-const useContentStyles = createStyles(() => ({
+const useContentStyles = createStyles(({ token }) => ({
   content: {
     width: '100%',
     overflow: 'hidden',
     padding: '0.8rem',
   },
   formItem: {
+    marginBottom: '1rem',
+  },
+  formItemLite: {
+    marginBottom: '0.5rem',
+  },
+  formItemLast: {
     marginBottom: '0',
+  },
+  input: {
+    height: '2.25rem',
   },
   welcomeImg: {
     position: 'absolute',
     right: 0,
     top: 0,
   },
+  forget: {
+    // color: '#2563eb',
+    color: token.colorPrimary,
+    cursor: 'pointer',
+  },
+  button: {
+    height: '2.5rem',
+  },
 }));
 const ContentSection = () => {
   const { styles } = useContentStyles();
-  const onFinish: FormProps<FieldType>['onFinish'] = values => {
+  const [messageApi, contextHolder] = message.useMessage({
+    duration: 3,
+  });
+  const { onUpdatePageType } = usePageType();
+  const [initialValues, setInitialValues] = useState({
+    account: '',
+    password: '',
+    captcha: false,
+  });
+  const dispatch = useDispatch<AppDispatch>();
+  const { rememberAccount, savedAccount } = useSelector(
+    (state: RootState) => state.user
+  );
+  const onFinish: FormProps<FieldType>['onFinish'] = async values => {
     console.log('Success:', values);
+    const { account, password } = values;
+    const { code, user, token } = await login({
+      type: 'account',
+      account: account,
+      password: password,
+    });
+    if (code == 1) {
+      dispatch(setUserInfo({ token, userInfo: user }));
+      if (rememberAccount) {
+        dispatch(toggleRemember({ flag: true, account }));
+      }
+      messageApi.success('登录成功');
+    } else {
+      messageApi.error('登录失败');
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = errorInfo => {
     console.log('Failed:', errorInfo);
   };
+  useEffect(() => {
+    if (rememberAccount) {
+      setInitialValues({
+        account: savedAccount,
+        password: '',
+        captcha: false,
+      });
+    }
+  }, []);
   return (
     <div className={styles.content}>
+      {contextHolder}
       <Form
         className={styles.content}
         name="basic"
         layout="vertical"
         requiredMark={false}
         wrapperCol={{ span: 24 }}
-        initialValues={{ remember: true }}
+        initialValues={initialValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item<FieldType>
           label="账号"
-          name="username"
+          name="account"
+          className={styles.formItem}
           rules={[{ required: true, message: '账号不能为空' }]}
         >
           <Input className={styles.input} placeholder="请输入账号..." />
@@ -96,8 +160,8 @@ const ContentSection = () => {
 
         <Form.Item<FieldType>
           label="密码"
-          className={styles.formItem}
           name="password"
+          className={styles.formItem}
           rules={[{ required: true, message: '密码不能为空' }]}
         >
           <Input.Password
@@ -106,16 +170,48 @@ const ContentSection = () => {
           />
         </Form.Item>
 
-        <Form.Item<FieldType> name="remember" label={null}>
+        <Form.Item<FieldType>
+          name="captcha"
+          label="滑块验证"
+          className={styles.formItemLite}
+          rules={[
+            {
+              validator: (_, value) =>
+                value
+                  ? Promise.resolve()
+                  : Promise.reject(new Error('请完成滑块验证')),
+            },
+          ]}
+        >
+          <SlideCaptcha />
+        </Form.Item>
+
+        <Form.Item className={styles.formItem}>
           <Flex justify="space-between">
-            <Checkbox>记住账号</Checkbox>
-            <div>忘记密码？</div>
+            <Checkbox
+              checked={rememberAccount}
+              onChange={e =>
+                dispatch(toggleRemember({ flag: e.target.checked }))
+              }
+            >
+              记住账号
+            </Checkbox>
+            <div
+              className={styles.forget}
+              onClick={() => onUpdatePageType('forget')}
+            >
+              忘记密码？
+            </div>
           </Flex>
         </Form.Item>
-        <Form.Item<FieldType> name="captcha" label="滑块验证"></Form.Item>
 
-        <Form.Item label={null} className={styles.formItem}>
-          <Button type="primary" block={true} htmlType="submit">
+        <Form.Item className={styles.formItemLast}>
+          <Button
+            type="primary"
+            className={styles.button}
+            block={true}
+            htmlType="submit"
+          >
             登录
           </Button>
         </Form.Item>
@@ -123,7 +219,7 @@ const ContentSection = () => {
     </div>
   );
 };
-const useFootStyles = createStyles(() => ({
+const useFootStyles = createStyles(({ token }) => ({
   footer: {
     width: '100%',
     overflow: 'hidden',
@@ -131,19 +227,46 @@ const useFootStyles = createStyles(() => ({
   },
   button: {
     width: '48%',
+    height: '2.5rem',
+  },
+  tips: {
+    marginTop: '1rem',
+    color: '#737373',
+    fontSize: '0.8rem',
+  },
+  register: {
+    // color: '#2563eb',
+    color: token.colorPrimary,
+    cursor: 'pointer',
   },
 }));
 const FooterSection = () => {
+  const { onUpdatePageType } = usePageType();
   const { styles } = useFootStyles();
   return (
     <div className={styles.footer}>
       <Flex justify="space-between">
-        <Button className={styles.button}>邮箱登录</Button>
-        <Button className={styles.button}>手机登录</Button>
+        <Button
+          className={styles.button}
+          onClick={() => onUpdatePageType('mail')}
+        >
+          邮箱登录
+        </Button>
+        <Button
+          className={styles.button}
+          onClick={() => onUpdatePageType('phone')}
+        >
+          手机登录
+        </Button>
       </Flex>
-      <Flex justify="center">
-        还没有账号?
-        <span className={styles.register}>创建新账号</span>
+      <Flex justify="center" className={styles.tips}>
+        还没有账号？
+        <span
+          className={styles.register}
+          onClick={() => onUpdatePageType('register')}
+        >
+          创建新账号
+        </span>
       </Flex>
     </div>
   );
@@ -168,4 +291,5 @@ const LoginByAccount = () => {
     </div>
   );
 };
+
 export default LoginByAccount;
