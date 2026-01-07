@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from '@/api/index';
 
 //获取所有文章列表
 //https://v1.jinrishici.com/
@@ -10,17 +10,17 @@ import request from "@/utils/request";
 //   })
 // }
 export const getRandomPoem = () => {
-	return request({
-		url: "/external/all.txt", // 使用代理路径
-		method: "get",
-	});
+  return request({
+    url: '/external/all.txt', // 使用代理路径
+    method: 'get',
+  });
 };
 
 export const uploadTest = (data, onUploadProgress) => {
-	return request({
-		url: "/public/uploadTest",
-		method: "post",
-		data,
-		onUploadProgress,
-	});
+  return request({
+    url: '/public/uploadTest',
+    method: 'post',
+    data,
+    onUploadProgress,
+  });
 };

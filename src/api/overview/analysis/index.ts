@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/api/index';
 import type { CommonResponse } from '@/types/common';
 import type { GetNumDataResponse, GetGeoDataResponse } from './type';
 enum API {

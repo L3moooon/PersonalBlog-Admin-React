@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/api/index';
 import type { CommonResponse, CommonListRequest } from '@/types/common';
 import type {
   ArticleListResponse,
