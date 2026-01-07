@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import path from 'path';
+
+import viteCompression from 'vite-plugin-compression';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const target = 'http://127.0.0.1:3000';
 const poem = 'https://v1.jinrishici.com';
@@ -20,6 +23,17 @@ export default defineConfig({
           },
         ],
       },
+    }),
+    viteCompression({
+      algorithm: 'gzip', // 压缩算法
+      threshold: 10240, // 文件大于10KB才压缩
+      deleteOriginFile: false, // 不删除原文件
+    }),
+    visualizer({
+      open: true, // 构建后自动打开分析页面
+      filename: 'stats.html', // 分析文件路径
+      gzipSize: true, // 显示gzip压缩后的大小
+      brotliSize: true, // 显示brotli压缩后的大小
     }),
   ],
   resolve: {

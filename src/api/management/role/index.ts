@@ -1,5 +1,4 @@
-//角色管理
-import request from '@/utils/request';
+import request from '@/api/index';
 import type { CommonListRequest, CommonListResponse } from '@/types/common';
 import type { RoleList } from './type';
 

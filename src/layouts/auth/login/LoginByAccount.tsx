@@ -1,4 +1,3 @@
-import { createStyles } from 'antd-style';
 import {
   Flex,
   Button,
@@ -8,14 +7,16 @@ import {
   message,
   type FormProps,
 } from 'antd';
+import { createStyles } from 'antd-style';
 import { usePageType } from '../context/PageTypeContext';
 import { useState, useEffect } from 'react';
 import { login } from '@/api/auth';
 import SlideCaptcha from '@/components/SlideCaptcha';
 import welcomeImg from '@/assets/images/welcome-en.png';
 
-import { useDispatch, useSelector } from 'react-redux'; // 导入 Hooks
-import { type RootState, type AppDispatch } from '@/store'; // 导入类型
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'; // useSelector获取状态, useDispatch获取方法
+import { type RootState, type AppDispatch } from '@/store';
 import { setUserInfo, toggleRemember } from '@/store/slices/userSlice';
 
 const useHeaderStyles = createStyles(() => ({
@@ -75,11 +76,6 @@ const useContentStyles = createStyles(({ token }) => ({
   input: {
     height: '2.25rem',
   },
-  welcomeImg: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
   forget: {
     // color: '#2563eb',
     color: token.colorPrimary,
@@ -91,19 +87,22 @@ const useContentStyles = createStyles(({ token }) => ({
 }));
 const ContentSection = () => {
   const { styles } = useContentStyles();
-  const [messageApi, contextHolder] = message.useMessage({
-    duration: 3,
-  });
+  const [messageApi, contextHolder] = message.useMessage({ duration: 3 });
+
   const { onUpdatePageType } = usePageType();
   const [initialValues, setInitialValues] = useState({
     account: '',
     password: '',
     captcha: false,
   });
+
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { rememberAccount, savedAccount } = useSelector(
     (state: RootState) => state.user
   );
+
+  // 提交登录表单
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
     console.log('Success:', values);
     const { account, password } = values;
@@ -113,11 +112,13 @@ const ContentSection = () => {
       password: password,
     });
     if (code == 1) {
+      console.log(token, user, account);
       dispatch(setUserInfo({ token, userInfo: user }));
       if (rememberAccount) {
         dispatch(toggleRemember({ flag: true, account }));
       }
       messageApi.success('登录成功');
+      navigate('/home');
     } else {
       messageApi.error('登录失败');
     }
@@ -272,23 +273,13 @@ const FooterSection = () => {
   );
 };
 
-const useRootStyles = createStyles(() => ({
-  root: {
-    padding: '10% 15%',
-    borderRadius: '1rem',
-    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#fff',
-  },
-}));
-
 const LoginByAccount = () => {
-  const { styles } = useRootStyles();
   return (
-    <div className={styles.root}>
+    <>
       <HeaderSection />
       <ContentSection />
       <FooterSection />
-    </div>
+    </>
   );
 };
 

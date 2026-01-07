@@ -7,7 +7,7 @@ export interface LoginRequest {
   password?: string;
   tel?: string;
   email?: string;
-  captcha?: string;
+  verificationCode?: string;
 }
 //登录响应
 export interface LoginResponse extends CommonResponse {

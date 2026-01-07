@@ -4,7 +4,6 @@ import { lazy, type LazyExoticComponent, type ComponentType } from 'react';
 export interface RouteItem {
   path: string;
   element: LazyExoticComponent<ComponentType<unknown>>;
-  requiresAuth?: boolean;
   children?: RouteItem[];
   meta?: {
     title?: string; // 菜单名称

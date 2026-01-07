@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { routes, type RouteItem } from './routes';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
+//声明式路由
 const renderRoutes = (routes: RouteItem[]) => {
   return routes.map(route => (
     <Route
