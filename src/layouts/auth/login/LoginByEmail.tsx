@@ -8,6 +8,7 @@ import mailBoxImg from '@/assets/images/mailbox.png';
 import { useDispatch, useSelector } from 'react-redux'; // 导入 Hooks
 import { type RootState, type AppDispatch } from '@/store'; // 导入类型
 import { setUserInfo } from '@/store/slices/userSlice';
+import { messageApi } from '@/utils/globalInstance';
 
 const useHeaderStyles = createStyles(() => ({
   header: {
@@ -47,7 +48,7 @@ type FieldType = {
   email: string;
   verificationCode: string;
 };
-const useContentStyles = createStyles(({ token }) => ({
+const useContentStyles = createStyles(() => ({
   content: {
     width: '100%',
     overflow: 'hidden',
@@ -71,11 +72,9 @@ const useContentStyles = createStyles(({ token }) => ({
 }));
 const ContentSection = () => {
   const { styles } = useContentStyles();
-  const [messageApi, contextHolder] = message.useMessage({
-    duration: 3,
-  });
   const { onUpdatePageType } = usePageType();
-
+  const [loading, setLoading] = useState(false);
+  const [waitTime, setWaitTime] = useState(60);
   const dispatch = useDispatch<AppDispatch>();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
@@ -100,7 +99,6 @@ const ContentSection = () => {
 
   return (
     <div className={styles.content}>
-      {contextHolder}
       <Form
         className={styles.content}
         name="basic"
@@ -128,7 +126,18 @@ const ContentSection = () => {
         >
           <Flex justify="space-between">
             <Input.OTP length={6} className={styles.input} />
-            <Button className={styles.button}>获取验证码</Button>
+            <Button
+              className={styles.button}
+              loading={loading}
+              disabled={loading || !email || waitTime > 0}
+              onClick={handleGetVerificationCode}
+            >
+              {loading
+                ? '获取中...'
+                : waitTime > 0
+                  ? `${waitTime}秒后重试`
+                  : '获取验证码'}
+            </Button>
           </Flex>
         </Form.Item>
 

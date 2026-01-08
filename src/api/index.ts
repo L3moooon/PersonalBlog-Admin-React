@@ -4,20 +4,9 @@ import axios, {
   type AxiosResponse,
   type AxiosError,
 } from 'axios';
-import { type NavigateFunction } from 'react-router-dom';
-import { message } from 'antd';
+import { messageApi, navigate } from '@/utils/globalInstance';
+import { getPersistItem } from '@/utils/getItem';
 
-// 定义 MessageInstance 类型
-type MessageInstance = ReturnType<typeof message.useMessage>[0];
-
-let navigate: NavigateFunction;
-export const setNavigate = (nav: NavigateFunction) => {
-  navigate = nav;
-};
-let messageApi: MessageInstance;
-export const setMessageApi = (api: MessageInstance) => {
-  messageApi = api;
-};
 // 创建 Axios 实例
 const request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -30,15 +19,14 @@ const request: AxiosInstance = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 1. 添加 Token 到请求头（认证逻辑）
-    const token = localStorage.getItem('token');
+    const token = getPersistItem('user', 'token');
+    // console.log(token);
     if (token && config.headers) {
       const payload = JSON.parse(atob(token.split('.')[1])); // 解析 token 的 payload
       const expirationTime = payload.exp * 1000; // 转换为毫秒
       const currentTime = Date.now();
       if (currentTime > expirationTime) {
-        localStorage.removeItem('token'); // 清除过期的 token
-        navigate('/login'); // 使用路由跳转，避免页面刷新
+        navigate('/auth'); // 使用路由跳转，避免页面刷新
         messageApi.error('登录状态过期，请重新登录');
       } else {
         config.headers.authorization = `Bearer ${token}`; // 遵循 Bearer 规范

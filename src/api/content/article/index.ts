@@ -6,7 +6,7 @@ import type {
   UpgradeArticleRequest,
   TagListResponse,
   AddTagRequest,
-} from '@/api/management/article/type';
+} from '@/api/content/article/type';
 
 enum API {
   GET_ARTICLE_LIST = '/admin/article/getArticleList', //获取文章列表

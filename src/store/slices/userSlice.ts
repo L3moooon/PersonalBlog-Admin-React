@@ -4,15 +4,11 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 interface UserState {
   userInfo: { id: string; name: string; role: string } | null;
   token: string;
-  rememberAccount: boolean;
-  savedAccount: string;
 }
 
 const initialState: UserState = {
   userInfo: null,
   token: '',
-  rememberAccount: false,
-  savedAccount: '',
 };
 
 // 创建用户切片
@@ -33,24 +29,11 @@ const userSlice = createSlice({
       state.token = '';
       state.userInfo = null;
     },
-    // 记住账号：更新状态并持久化
-    toggleRemember: (
-      state,
-      action: PayloadAction<{
-        flag: boolean;
-        account?: string;
-      }>
-    ) => {
-      state.rememberAccount = action.payload.flag;
-      if (action.payload.account !== undefined) {
-        state.savedAccount = action.payload.account;
-      }
-    },
   },
 });
 
 // 导出同步 action
-export const { setUserInfo, logout, toggleRemember } = userSlice.actions;
+export const { setUserInfo, logout } = userSlice.actions;
 
 // 导出切片
 export default userSlice.reducer;
