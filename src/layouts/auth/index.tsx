@@ -22,6 +22,8 @@ const useStyles = createStyles(() => ({
   cardContainer: {
     aspectRatio: '4/3',
     width: '40%',
+    minWidth: '35rem',
+    maxWidth: '50rem',
     position: 'relative',
     opacity: 0.9,
   },

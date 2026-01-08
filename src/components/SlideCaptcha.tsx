@@ -16,6 +16,7 @@ const useStyles = createStyles(({ token }) => {
       padding: '0 0.1rem',
     },
     mention: {
+      whiteSpace: 'nowrap',
       position: 'absolute',
       left: '50%',
       top: '50%',

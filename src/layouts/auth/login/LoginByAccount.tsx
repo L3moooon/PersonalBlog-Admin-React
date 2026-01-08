@@ -1,23 +1,16 @@
-import {
-  Flex,
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  message,
-  type FormProps,
-} from 'antd';
+import { Flex, Button, Checkbox, Form, Input, type FormProps } from 'antd';
 import { createStyles } from 'antd-style';
 import { usePageType } from '../context/PageTypeContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { login } from '@/api/auth';
 import SlideCaptcha from '@/components/SlideCaptcha';
 import welcomeImg from '@/assets/images/welcome-en.png';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; // useSelector获取状态, useDispatch获取方法
-import { type RootState, type AppDispatch } from '@/store';
-import { setUserInfo, toggleRemember } from '@/store/slices/userSlice';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '@/store';
+import { setUserInfo } from '@/store/slices/userSlice';
+import { getItem, setItem } from '@/utils/getItem';
 
 const useHeaderStyles = createStyles(() => ({
   header: {
@@ -53,6 +46,28 @@ const HeaderSection = () => {
     </div>
   );
 };
+
+type CustomErrorHelpProps = {
+  errors: string;
+};
+const useErrorStyles = createStyles(({ token }) => ({
+  customErrorHelp: {
+    position: 'absolute',
+    top: '-1.7rem',
+    right: '0',
+    color: token.colorError,
+    fontSize: '0.8rem',
+  },
+}));
+const CustomErrorHelp = ({ errors }: CustomErrorHelpProps) => {
+  const { styles } = useErrorStyles();
+  return (
+    <div className={styles.customErrorHelp}>
+      <span>{errors}</span>
+    </div>
+  );
+};
+
 type FieldType = {
   account: string;
   password: string;
@@ -66,6 +81,7 @@ const useContentStyles = createStyles(({ token }) => ({
   },
   formItem: {
     marginBottom: '1rem',
+    position: 'relative',
   },
   formItemLite: {
     marginBottom: '0.5rem',
@@ -85,26 +101,33 @@ const useContentStyles = createStyles(({ token }) => ({
     height: '2.5rem',
   },
 }));
+import { messageApi } from '@/utils/globalInstance';
 const ContentSection = () => {
   const { styles } = useContentStyles();
-  const [messageApi, contextHolder] = message.useMessage({ duration: 3 });
 
   const { onUpdatePageType } = usePageType();
-  const [initialValues, setInitialValues] = useState({
-    account: '',
-    password: '',
-    captcha: false,
+  const [rememberMe, setRememberMe] = useState(getItem('rememberMe'));
+
+  const [initialValues] = useState(() => {
+    return getItem('rememberMe')
+      ? {
+          account: getItem('account')!,
+          password: getItem('password')!,
+          captcha: false,
+        }
+      : {
+          account: '',
+          password: '',
+          captcha: false,
+        };
   });
 
   const navigate = useNavigate();
+
   const dispatch = useDispatch<AppDispatch>();
-  const { rememberAccount, savedAccount } = useSelector(
-    (state: RootState) => state.user
-  );
 
   // 提交登录表单
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
-    console.log('Success:', values);
     const { account, password } = values;
     const { code, user, token } = await login({
       type: 'account',
@@ -114,11 +137,15 @@ const ContentSection = () => {
     if (code == 1) {
       console.log(token, user, account);
       dispatch(setUserInfo({ token, userInfo: user }));
-      if (rememberAccount) {
-        dispatch(toggleRemember({ flag: true, account }));
+      if (rememberMe) {
+        setItem('rememberMe', true);
+        setItem('account', account);
+        setItem('password', password);
+      } else {
+        setItem('rememberMe', false);
       }
       messageApi.success('登录成功');
-      navigate('/home');
+      navigate('/');
     } else {
       messageApi.error('登录失败');
     }
@@ -127,18 +154,8 @@ const ContentSection = () => {
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = errorInfo => {
     console.log('Failed:', errorInfo);
   };
-  useEffect(() => {
-    if (rememberAccount) {
-      setInitialValues({
-        account: savedAccount,
-        password: '',
-        captcha: false,
-      });
-    }
-  }, []);
   return (
     <div className={styles.content}>
-      {contextHolder}
       <Form
         className={styles.content}
         name="basic"
@@ -154,7 +171,12 @@ const ContentSection = () => {
           label="账号"
           name="account"
           className={styles.formItem}
-          rules={[{ required: true, message: '账号不能为空' }]}
+          rules={[
+            {
+              required: true,
+              message: <CustomErrorHelp errors="账号不能为空" />,
+            },
+          ]}
         >
           <Input className={styles.input} placeholder="请输入账号..." />
         </Form.Item>
@@ -163,7 +185,12 @@ const ContentSection = () => {
           label="密码"
           name="password"
           className={styles.formItem}
-          rules={[{ required: true, message: '密码不能为空' }]}
+          rules={[
+            {
+              required: true,
+              message: <CustomErrorHelp errors="密码不能为空" />,
+            },
+          ]}
         >
           <Input.Password
             className={styles.input}
@@ -177,10 +204,10 @@ const ContentSection = () => {
           className={styles.formItemLite}
           rules={[
             {
+              required: true,
+              message: <CustomErrorHelp errors="请完成滑块验证" />,
               validator: (_, value) =>
-                value
-                  ? Promise.resolve()
-                  : Promise.reject(new Error('请完成滑块验证')),
+                value ? Promise.resolve() : Promise.reject(),
             },
           ]}
         >
@@ -190,10 +217,8 @@ const ContentSection = () => {
         <Form.Item className={styles.formItem}>
           <Flex justify="space-between">
             <Checkbox
-              checked={rememberAccount}
-              onChange={e =>
-                dispatch(toggleRemember({ flag: e.target.checked }))
-              }
+              checked={rememberMe}
+              onChange={e => setRememberMe(e.target.checked)}
             >
               记住账号
             </Checkbox>
