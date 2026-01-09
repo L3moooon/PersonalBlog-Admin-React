@@ -32,3 +32,8 @@ export interface RegisterRequest {
 export interface EmailCaptchaRequest {
   email: string | undefined;
 }
+
+//短信验证码请求
+export interface SmsCaptchaRequest {
+  tel: string | undefined;
+}

@@ -3,10 +3,11 @@ import { Flex } from 'antd';
 import { createStyles } from 'antd-style';
 import { PageTypeProvider } from './context/PageTypeContext';
 
-import LoginByAccount from './login/LoginByAccount';
-import LoginByEmail from './login/LoginByEmail';
-import LoginByQRcode from './login/LoginByQRcode';
-import ForgetPassword from './forget/ForgetPassword';
+import LoginByAccount from './LoginByAccount';
+import LoginByEmail from './LoginByEmail';
+import LoginByQRcode from './LoginBySms';
+import ForgetPassword from './ForgetPassword';
+import RegisterAccount from './RegisterAccount';
 
 import backgroundImg from '@/assets/images/background.png';
 
@@ -35,13 +36,15 @@ const useStyles = createStyles(() => ({
   },
 }));
 const AuthIndex = () => {
-  const [pageType, setPageType] = useState<PageType>('account');
+  const [pageType, setPageType] = useState<PageType>(() => {
+    return (sessionStorage.getItem('pageType') as PageType) || 'account';
+  });
   const { styles } = useStyles();
 
   const handleUpdatePageType = (type: PageType) => {
     setPageType(type);
+    sessionStorage.setItem('pageType', type);
   };
-
   return (
     <PageTypeProvider onUpdatePageType={handleUpdatePageType}>
       <Flex justify="center" align="center" className={styles.root}>
@@ -51,8 +54,8 @@ const AuthIndex = () => {
             {pageType == 'mail' && <LoginByEmail />}
             {pageType == 'phone' && <LoginByQRcode />}
             {pageType == 'forget' && <ForgetPassword />}
-            {/* {pageType == 'reset' && <ForgetPassword />}
-          {pageType == 'register' && <ForgetPassword />} */}
+            {/* {pageType == 'reset' && <ForgetPassword />} */}
+            {pageType == 'register' && <RegisterAccount />}
           </div>
         </div>
       </Flex>

@@ -12,9 +12,11 @@ import {
 import storage from 'redux-persist/lib/storage'; // 默认使用 localStorage
 
 import userReducer from './slices/userSlice'; //导入切片
+import ossReducer from './slices/ossSlice'; //导入切片
 
 const rootReducer = combineReducers({
   user: userReducer,
+  oss: ossReducer,
   // cart: cartReducer,
   // temp: tempReducer, // 临时状态，不持久化
 });
@@ -25,7 +27,7 @@ export const store = configureStore({
     {
       key: 'root', // 持久化的根 key
       storage: storage, // 存储引擎：localStorage
-      whitelist: ['user'], // 只持久化 user 切片（白名单）
+      whitelist: ['user', 'oss'], // 只持久化 user 切片（白名单）
       // blacklist: ['temp'], // 不持久化 temp 切片（黑名单，与白名单二选一）
     },
     rootReducer
