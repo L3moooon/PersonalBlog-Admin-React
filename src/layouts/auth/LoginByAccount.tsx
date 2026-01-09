@@ -1,6 +1,6 @@
 import { Flex, Button, Checkbox, Form, Input, type FormProps } from 'antd';
 import { createStyles } from 'antd-style';
-import { usePageType } from '../context/PageTypeContext';
+import { usePageType } from './context/PageTypeContext';
 import { useState } from 'react';
 import { login } from '@/api/auth';
 import SlideCaptcha from '@/components/SlideCaptcha';
@@ -11,6 +11,8 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '@/store';
 import { setUserInfo } from '@/store/slices/userSlice';
 import { getItem, setItem } from '@/utils/getItem';
+import { messageApi } from '@/utils/globalInstance';
+import CustomErrorHelp from './CustomErrorHelp';
 
 const useHeaderStyles = createStyles(() => ({
   header: {
@@ -47,27 +49,6 @@ const HeaderSection = () => {
   );
 };
 
-type CustomErrorHelpProps = {
-  errors: string;
-};
-const useErrorStyles = createStyles(({ token }) => ({
-  customErrorHelp: {
-    position: 'absolute',
-    top: '-1.7rem',
-    right: '0',
-    color: token.colorError,
-    fontSize: '0.8rem',
-  },
-}));
-const CustomErrorHelp = ({ errors }: CustomErrorHelpProps) => {
-  const { styles } = useErrorStyles();
-  return (
-    <div className={styles.customErrorHelp}>
-      <span>{errors}</span>
-    </div>
-  );
-};
-
 type FieldType = {
   account: string;
   password: string;
@@ -77,7 +58,7 @@ const useContentStyles = createStyles(({ token }) => ({
   content: {
     width: '100%',
     overflow: 'hidden',
-    padding: '0.8rem',
+    padding: '0.8rem 0.8rem 0 0.8rem',
   },
   formItem: {
     marginBottom: '1rem',
@@ -101,7 +82,6 @@ const useContentStyles = createStyles(({ token }) => ({
     height: '2.5rem',
   },
 }));
-import { messageApi } from '@/utils/globalInstance';
 const ContentSection = () => {
   const { styles } = useContentStyles();
 
@@ -250,6 +230,7 @@ const useFootStyles = createStyles(({ token }) => ({
     width: '100%',
     overflow: 'hidden',
     padding: '0 1.5rem',
+    marginTop: '1rem',
   },
   button: {
     width: '48%',
