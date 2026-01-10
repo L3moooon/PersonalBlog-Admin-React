@@ -6,6 +6,9 @@ import type {
   RegisterRequest,
   EmailCaptchaRequest,
   SmsCaptchaRequest,
+  ForgetPasswordRequest,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
 } from './type';
 
 enum API {
@@ -13,7 +16,8 @@ enum API {
   REGISTER = '/admin/auth/register', //注册
   GET_EMAIL_CAPTCHA = '/admin/auth/getEmailCaptcha', //获取邮箱验证码
   GET_SMS_CAPTCHA = '/admin/auth/getSmsCaptcha', //获取短信验证码
-  RESET_PASSWORD = '/admin/auth/forgetPassword', //忘记密码
+  FORGET_PASSWORD = '/admin/auth/forgetPassword', //忘记密码
+  RESET_PASSWORD = '/admin/auth/resetPassword', //重置密码
   MODIFY_INFO = '', //修改个人信息
 }
 
@@ -22,6 +26,14 @@ export const login = (data: LoginRequest): Promise<LoginResponse> =>
 
 export const register = (data: RegisterRequest): Promise<CommonResponse> =>
   request.post(API.REGISTER, data);
+
+export const forgetPassword = (
+  data: ForgetPasswordRequest
+): Promise<CommonResponse> => request.post(API.FORGET_PASSWORD, data);
+
+export const resetPassword = (
+  data: ResetPasswordRequest
+): Promise<ResetPasswordResponse> => request.post(API.RESET_PASSWORD, data);
 
 export const getEmailCaptcha = (
   data: EmailCaptchaRequest

@@ -153,7 +153,7 @@ const ContentSection = () => {
           rules={[
             {
               required: true,
-              message: <CustomErrorHelp errors="请再次输入密码" />,
+              message: <CustomErrorHelp errors="请确认输入密码" />,
             },
           ]}
         >

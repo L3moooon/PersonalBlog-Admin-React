@@ -1,11 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import { Button, Flex, Layout, Menu, Breadcrumb, type MenuProps } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
 import { createStyles } from 'antd-style';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/Icon';
 import mainLogo from '@/assets/images/portrait.jpg';
+
+const { Header, Content, Footer, Sider } = Layout;
 
 const menu: MenuProps['items'] = [
   {

@@ -23,6 +23,7 @@ request.interceptors.request.use(
     // console.log(token);
     if (token && config.headers) {
       const payload = JSON.parse(atob(token.split('.')[1])); // 解析 token 的 payload
+      console.log(payload);
       const expirationTime = payload.exp * 1000; // 转换为毫秒
       const currentTime = Date.now();
       if (currentTime > expirationTime) {
@@ -48,6 +49,9 @@ request.interceptors.response.use(
     let message = '';
     const status = error.response;
     switch (status) {
+      case 400:
+        message = '请求参数错误';
+        break;
       case 401:
         message = '登录已过期，请重新登录';
         break;
