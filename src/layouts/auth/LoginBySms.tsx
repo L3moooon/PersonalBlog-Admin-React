@@ -47,8 +47,8 @@ const HeaderSection = () => {
   );
 };
 type FieldType = {
-  tel: string;
-  verificationCode: string;
+  tel?: string;
+  verificationCode?: string;
 };
 const useContentStyles = createStyles(() => ({
   content: {
@@ -70,7 +70,7 @@ const useContentStyles = createStyles(() => ({
   },
   button: {
     width: '8rem',
-    height: '2.25rem',
+    height: '2.5rem',
   },
 }));
 const ContentSection = () => {
@@ -79,22 +79,25 @@ const ContentSection = () => {
   const { onUpdatePageType } = usePageType();
   const [loading, setLoading] = useState(false);
   const [waitTime, setWaitTime] = useState(0);
-  const [phone, setPhone] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [form] = Form.useForm<FieldType>();
   const navigate = useNavigate();
 
   //获取验证码
   const handleGetVerificationCode = async () => {
-    if (!phone) {
-      messageApi.error('请输入手机号');
-      return;
-    }
     try {
+      await form.validateFields(['tel']);
       setLoading(true);
-      await getSmsCaptcha({ tel: phone });
+      await getSmsCaptcha({ phone: form.getFieldValue('tel') });
       messageApi.success('验证码已发送');
       setWaitTime(60);
     } catch (error) {
-      messageApi.error('获取验证码失败,' + error);
+      console.log(error);
+      if (error instanceof Error) {
+        messageApi.error('验证码获取失败,' + error.message);
+      } else {
+        messageApi.error('请输入正确的手机号');
+      }
     } finally {
       setLoading(false);
     }
@@ -118,27 +121,18 @@ const ContentSection = () => {
   //提交成功
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
     console.log('Success:', values);
-    const { tel, verificationCode } = values;
+    const { tel } = values;
     const { code, user, token } = await login({
       type: 'phone',
-      tel,
+      phone: tel,
       verificationCode,
     });
-    switch (code) {
-      case 1:
-        dispatch(setUserInfo({ token, userInfo: user }));
-        messageApi.success('登录成功');
-        navigate('/');
-        break;
-      case 10008:
-        messageApi.error('验证码已过期，请重新获取');
-        break;
-      case 10009:
-        messageApi.error('验证码错误');
-        break;
-      default:
-        messageApi.error('登录失败');
-        break;
+    if (code == 1) {
+      dispatch(setUserInfo({ token, userInfo: user }));
+      messageApi.success('登录成功');
+      navigate('/');
+    } else {
+      messageApi.error('登录失败,验证码错误或已过期');
     }
   };
   //提交失败
@@ -149,6 +143,7 @@ const ContentSection = () => {
   return (
     <div className={styles.content}>
       <Form
+        form={form}
         className={styles.content}
         name="basic"
         layout="vertical"
@@ -162,42 +157,46 @@ const ContentSection = () => {
           label="手机号"
           name="tel"
           className={styles.formItem}
+          validateTrigger="onBlur"
           rules={[
             {
               required: true,
               message: <CustomErrorHelp errors="手机号不能为空" />,
             },
             {
-              type: 'string',
               pattern: /^1[3-9]\d{9}$/, // 使用正则表达式
               message: <CustomErrorHelp errors="请输入有效的手机号格式" />,
             },
           ]}
         >
-          <Input
-            className={styles.input}
-            placeholder="请输入手机号..."
-            onChange={e => setPhone(e.target.value)}
-          />
+          <Input className={styles.input} placeholder="请输入手机号..." />
         </Form.Item>
 
         <Form.Item<FieldType>
           label="验证码"
-          name="verificationCode"
           className={styles.formItemLast}
+          name="verificationCode"
+          validateTrigger="onSubmit"
           rules={[
             {
-              required: true,
-              message: <CustomErrorHelp errors="验证码不能为空" />,
+              validator: () =>
+                verificationCode.length == 4
+                  ? Promise.resolve()
+                  : Promise.reject(),
+              message: <CustomErrorHelp errors="请填写验证码" />,
             },
           ]}
         >
           <Flex justify="space-between" align="center">
-            <Input.OTP length={4} className={styles.input} />
+            <Input.OTP
+              length={4}
+              className={styles.input}
+              onChange={value => setVerificationCode(value)}
+            />
             <Button
               className={styles.button}
               loading={loading}
-              disabled={loading || !phone || waitTime > 0}
+              disabled={loading || waitTime > 0}
               onClick={handleGetVerificationCode}
             >
               {loading

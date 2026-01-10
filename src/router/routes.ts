@@ -36,6 +36,11 @@ export const routes: RouteItem[] = [
     ],
   },
   {
+    path: '/reset-password',
+    element: lazy(() => import('@/layouts/auth/ResetPassword')),
+    meta: { requiresAuth: false, title: '重置密码' },
+  },
+  {
     path: '*',
     element: lazy(() => import('@/layouts/default/NotFound')),
     meta: { requiresAuth: false, title: '页面不存在' },

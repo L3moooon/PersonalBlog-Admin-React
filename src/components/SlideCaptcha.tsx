@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
-import { createStyles } from 'antd-style';
+import { createStyles, cx } from 'antd-style';
 import { Flex } from 'antd';
-import { clsx } from 'clsx';
 import Icon from './Icon';
 
+// TODO 抓握和滑块滚动幅度不一样
 const useStyles = createStyles(({ token }) => {
   return {
     wrapper: {
@@ -129,12 +129,12 @@ const SlideCaptcha = ({ value, onChange }: SlideCaptchaProps) => {
   return (
     <div ref={wrapperRef} className={styles.wrapper}>
       {!isVerify && (
-        <span className={clsx(styles.mention, styles.text1)}>
+        <span className={cx(styles.mention, styles.text1)}>
           请按住滑块，拖动到最右边
         </span>
       )}
       {isVerify && (
-        <span className={clsx(styles.mention, styles.text2)}>验证通过</span>
+        <span className={cx(styles.mention, styles.text2)}>验证通过</span>
       )}
       <Flex align="center" style={innerStyle} className={styles.inner}>
         <Flex

@@ -70,7 +70,7 @@ const useContentStyles = createStyles(() => ({
   },
   button: {
     width: '8rem',
-    height: '2.25rem',
+    height: '2.5rem',
   },
 }));
 const ContentSection = () => {
@@ -79,18 +79,22 @@ const ContentSection = () => {
   const { onUpdatePageType } = usePageType();
   const [loading, setLoading] = useState(false);
   const [waitTime, setWaitTime] = useState(0);
-  const [email, setEmail] = useState('');
+  const [form] = Form.useForm<FieldType>();
+  const [verificationCode, setVerificationCode] = useState('');
   const navigate = useNavigate();
 
   //获取验证码
   const handleGetVerificationCode = async () => {
-    if (!email) {
-      messageApi.error('请输入邮箱');
+    try {
+      await form.validateFields(['email']);
+    } catch (error) {
+      messageApi.error('请输入正确的邮箱');
+      console.log(error);
       return;
     }
     try {
       setLoading(true);
-      await getEmailCaptcha({ email });
+      await getEmailCaptcha({ email: form.getFieldValue('email') });
       messageApi.success('验证码已发送');
       setWaitTime(60);
     } catch (error) {
@@ -117,8 +121,8 @@ const ContentSection = () => {
   }, [isCountingDown]);
   //提交成功
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
-    console.log('Success:', values);
-    const { email, verificationCode } = values;
+    console.log('Success:', values, verificationCode);
+    const { email } = values;
     const { code, user, token } = await login({
       type: 'email',
       email,
@@ -149,6 +153,7 @@ const ContentSection = () => {
   return (
     <div className={styles.content}>
       <Form
+        form={form}
         className={styles.content}
         name="basic"
         layout="vertical"
@@ -162,6 +167,7 @@ const ContentSection = () => {
           label="邮箱"
           name="email"
           className={styles.formItem}
+          validateTrigger="onBlur"
           rules={[
             {
               required: true,
@@ -173,30 +179,34 @@ const ContentSection = () => {
             },
           ]}
         >
-          <Input
-            className={styles.input}
-            placeholder="请输入邮箱..."
-            onChange={e => setEmail(e.target.value)}
-          />
+          <Input className={styles.input} placeholder="请输入邮箱..." />
         </Form.Item>
 
         <Form.Item<FieldType>
           label="验证码"
           name="verificationCode"
+          validateTrigger="onSubmit"
           className={styles.formItemLast}
           rules={[
             {
-              required: true,
-              message: <CustomErrorHelp errors="验证码不能为空" />,
+              validator: () =>
+                verificationCode.length == 6
+                  ? Promise.resolve()
+                  : Promise.reject(),
+              message: <CustomErrorHelp errors="请填写验证码" />,
             },
           ]}
         >
           <Flex justify="space-between" align="center">
-            <Input.OTP length={6} className={styles.input} />
+            <Input.OTP
+              length={6}
+              className={styles.input}
+              onChange={value => setVerificationCode(value)}
+            />
             <Button
               className={styles.button}
               loading={loading}
-              disabled={loading || !email || waitTime > 0}
+              disabled={loading || waitTime > 0}
               onClick={handleGetVerificationCode}
             >
               {loading
