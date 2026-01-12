@@ -120,6 +120,10 @@ const ContentSection = () => {
               required: true,
               message: <CustomErrorHelp errors="邮箱不能为空" />,
             },
+            {
+              type: 'email',
+              message: <CustomErrorHelp errors="请输入有效的邮箱格式" />,
+            },
           ]}
         >
           <Input className={styles.input} placeholder="请输入邮箱..." />

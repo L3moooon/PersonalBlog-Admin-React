@@ -2,10 +2,10 @@ import type { CommonResponse } from '@/types/common';
 
 export interface GetNumDataResponse extends CommonResponse {
   data: {
-    total_visits: number;
-    article_count: number;
-    comment_count: number;
-    star_count: number;
+    visit: { total: number; today: number };
+    article: { total: number; today: number };
+    comment: { total: number; today: number };
+    like: { total: number; today: number };
   };
 }
 // 访客地图数据
