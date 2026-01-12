@@ -1,6 +1,11 @@
-import { Statistic } from 'antd';
-
+import StatisticData from './StatisticData';
+import VisitorMap from './VisitorMap';
 const dashboard = () => {
-  return <div>dashboard</div>;
+  return (
+    <>
+      <StatisticData />
+      <VisitorMap />
+    </>
+  );
 };
 export default dashboard;

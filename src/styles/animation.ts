@@ -1,6 +1,6 @@
 import { keyframes } from 'antd-style';
 
-//淡入淡出
+//移入移出(上下)
 export const fadeUp = keyframes`
   from {
     opacity: 0;

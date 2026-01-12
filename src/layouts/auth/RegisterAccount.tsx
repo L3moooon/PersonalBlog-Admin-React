@@ -45,7 +45,7 @@ const HeaderSection = () => {
 type FieldType = {
   account: string;
   password: string;
-  captcha: boolean;
+  repeatPassword: boolean;
 };
 const useContentStyles = createStyles(({ token }) => ({
   content: {
@@ -124,6 +124,12 @@ const ContentSection = () => {
               required: true,
               message: <CustomErrorHelp errors="账号不能为空" />,
             },
+            {
+              pattern: /^[\w]{6,20}$/, // 使用正则表达式
+              message: (
+                <CustomErrorHelp errors="账号长度 6-20 位，支持字母、数字、下划线" />
+              ),
+            },
           ]}
         >
           <Input className={styles.input} placeholder="请输入账号..." />
@@ -147,7 +153,8 @@ const ContentSection = () => {
         </Form.Item>
 
         <Form.Item<FieldType>
-          name="captcha"
+          dependencies={['password']}
+          name="repeatPassword"
           label="重复密码"
           className={styles.formItemLast}
           rules={[
@@ -155,6 +162,15 @@ const ContentSection = () => {
               required: true,
               message: <CustomErrorHelp errors="请确认输入密码" />,
             },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject();
+              },
+              message: <CustomErrorHelp errors="两次输入的密码不一致" />,
+            }),
           ]}
         >
           <Input.Password
