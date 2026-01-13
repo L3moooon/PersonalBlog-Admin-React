@@ -139,7 +139,7 @@ const StatisticData = () => {
   return (
     <Row gutter={16}>
       {Object.values(data).map(item => (
-        <DataCard data={item} />
+        <DataCard data={item} key={item.title} />
       ))}
     </Row>
   );
