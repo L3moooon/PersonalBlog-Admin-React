@@ -10,28 +10,30 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // 默认使用 localStorage
+import { encryptTransform } from 'redux-persist-transform-encrypt';
 
 import userReducer from './slices/userSlice'; //导入切片
 import ossReducer from './slices/ossSlice'; //导入切片
 
+const encryptor = encryptTransform({
+  secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,
+  onError: function (error) {
+    console.error('redux-persist 加密/解密失败：', error);
+  },
+});
+export const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['user', 'oss'],
+  transforms: [encryptor],
+};
 const rootReducer = combineReducers({
   user: userReducer,
   oss: ossReducer,
-  // cart: cartReducer,
-  // temp: tempReducer, // 临时状态，不持久化
 });
-
 //配置全局store
 export const store = configureStore({
-  reducer: persistReducer(
-    {
-      key: 'root', // 持久化的根 key
-      storage: storage, // 存储引擎：localStorage
-      whitelist: ['user', 'oss'], // 只持久化 user 切片（白名单）
-      // blacklist: ['temp'], // 不持久化 temp 切片（黑名单，与白名单二选一）
-    },
-    rootReducer
-  ),
+  reducer: persistReducer(persistConfig, rootReducer),
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

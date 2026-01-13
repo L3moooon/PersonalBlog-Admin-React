@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
-import { Button, Layout, Menu, Breadcrumb, type MenuProps } from 'antd';
+import { Flex, Button, Layout, Menu, Breadcrumb, type MenuProps } from 'antd';
 import { createStyles, cx, keyframes } from 'antd-style';
 
 import Icon from '@/components/Icon';
 import mainLogo from '@/assets/images/portrait.jpg';
 import TabSet from './TabSet';
-import Widgets from './widgets';
+import Widgets from './widgets/index.tsx';
 
 const { Header, Content, Sider } = Layout;
 
@@ -161,6 +161,7 @@ const useStyles = createStyles(({ token }) => ({
     padding: '0 1rem',
     background: token.colorBgContainer,
     display: 'flex',
+    justifyContent: 'space-between',
     alignItems: 'center',
     height: '64px',
     borderBottom: `1px solid ${token.colorBorderSecondary}`,
@@ -220,21 +221,23 @@ const BasicIndex = () => {
       </Sider>
       <Layout>
         <Header className={styles.header}>
-          <Button
-            type="text"
-            onClick={() => setCollapsed(!collapsed)}
-            icon={
-              collapsed ? (
-                <Icon name="main-unfold" size="1.5rem" />
-              ) : (
-                <Icon name="main-fold" size="1.5rem" />
-              )
-            }
-          />
-          <Breadcrumb
-            className={styles.breadcrumb}
-            items={[{ title: '首页' }, { title: '仪表盘' }]}
-          />
+          <Flex justify="space-between" align="center" gap={16}>
+            <Button
+              type="text"
+              onClick={() => setCollapsed(!collapsed)}
+              icon={
+                collapsed ? (
+                  <Icon name="main-unfold" size="1.5rem" />
+                ) : (
+                  <Icon name="main-fold" size="1.5rem" />
+                )
+              }
+            />
+            <Breadcrumb
+              className={styles.breadcrumb}
+              items={[{ title: '首页' }, { title: '仪表盘' }]}
+            />
+          </Flex>
           <Widgets />
         </Header>
         <Content className={styles.content}>
