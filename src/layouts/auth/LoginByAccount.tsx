@@ -7,9 +7,9 @@ import SlideCaptcha from '@/components/SlideCaptcha';
 import welcomeImg from '@/assets/images/welcome-en.png';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '@/store';
-import { setUserInfo } from '@/store/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '@/store';
+import { setUserInfo, saveAccount } from '@/store/slices/userSlice';
 import { getItem, setItem } from '@/utils/getItem';
 import { messageApi } from '@/utils/globalInstance';
 import CustomErrorHelp from './CustomErrorHelp';
@@ -84,15 +84,20 @@ const useContentStyles = createStyles(({ token }) => ({
 }));
 const ContentSection = () => {
   const { styles } = useContentStyles();
-
   const { onUpdatePageType } = usePageType();
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { savedAccount, savedPassword } = useSelector(
+    (state: RootState) => state.user
+  );
   const [rememberMe, setRememberMe] = useState(getItem('rememberMe'));
 
   const [initialValues] = useState(() => {
     return getItem('rememberMe')
       ? {
-          account: getItem('account')!,
-          password: getItem('password')!,
+          account: savedAccount,
+          password: savedPassword,
           captcha: false,
         }
       : {
@@ -101,10 +106,6 @@ const ContentSection = () => {
           captcha: false,
         };
   });
-
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch<AppDispatch>();
 
   // 提交登录表单
   const onFinish: FormProps<FieldType>['onFinish'] = async values => {
@@ -118,10 +119,10 @@ const ContentSection = () => {
       console.log(token, user, account);
       dispatch(setUserInfo({ token, userInfo: user }));
       if (rememberMe) {
+        dispatch(saveAccount({ account, password }));
         setItem('rememberMe', true);
-        setItem('account', account);
-        setItem('password', password);
       } else {
+        dispatch(saveAccount({ account: '', password: '' }));
         setItem('rememberMe', false);
       }
       messageApi.success('登录成功');

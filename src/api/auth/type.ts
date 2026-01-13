@@ -42,6 +42,9 @@ export interface LoginResponse extends CommonResponse {
   token: string;
   user: {
     name: string;
+    account: string;
+    role_name: string;
+    avatar: string;
     permissions: {
       routeKey: Array<string>;
       componentKeys?: Array<string>;

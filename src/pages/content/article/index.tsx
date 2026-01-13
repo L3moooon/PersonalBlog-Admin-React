@@ -7,7 +7,7 @@ import type { ArticleItem, TagItem } from '@/api/content/article/type';
 
 import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
-import timeFormatter from '@/utils/timeFormatter';
+import { timeFormatter } from '@/utils/timeFormatter';
 import defaultImg from '@/assets/images/default-cover.png';
 
 const useStyles = createStyles(({ token }) => ({
