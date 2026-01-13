@@ -1,5 +1,8 @@
 // 日期格式化工具函数
-const timeFormatter = (date: string | Date, format = 'YYYY-MM-DD HH:mm:ss') => {
+export const timeFormatter = (
+  date: string | Date,
+  format = 'YYYY-MM-DD HH:mm:ss'
+) => {
   if (!date) return '';
 
   // 处理字符串类型日期
@@ -33,4 +36,37 @@ const timeFormatter = (date: string | Date, format = 'YYYY-MM-DD HH:mm:ss') => {
   return targetDate.toLocaleString('zh-CN', options).replace(/\//g, '-');
 };
 
-export default timeFormatter;
+export const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  // 月份补0 01-12
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  // 日期补0 01-31
+  const day = date.getDate().toString().padStart(2, '0');
+  // 小时补0 00-23
+  const hours = date.getHours().toString().padStart(2, '0');
+  // 分钟补0 00-59
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  // 秒数补0 00-59
+  const seconds = date.getSeconds().toString().padStart(2, '0');
+  // 星期转换 0=周日 1=周一 ... 6=周六
+  const weekArr = [
+    '星期日',
+    '星期一',
+    '星期二',
+    '星期三',
+    '星期四',
+    '星期五',
+    '星期六',
+  ];
+  const week = weekArr[date.getDay()];
+  // 返回拼接后的时间格式，可按需修改
+  return {
+    year,
+    month,
+    day,
+    hours,
+    minutes,
+    seconds,
+    week,
+  };
+};
