@@ -1,6 +1,6 @@
-import { ThemeConfig } from 'antd';
+import type { ThemeConfig } from 'antd';
 
-import { ColorPalettes, genMapTokenAlgorithm } from '../algorithms';
+import { type ColorPalettes, genMapTokenAlgorithm } from './algorithms';
 
 const lightMode = genMapTokenAlgorithm();
 
@@ -10,6 +10,7 @@ export const lightTheme: ThemeConfig = {
   token: {
     colorBgLayout: '#f8f8fa', // Layout 颜色
     colorTextBase: '#2a2e36',
+    colorTextSecondary: '#2a2e3673',
 
     colorLinkHover: lightColorPalettes.primary[5],
     colorLink: lightColorPalettes.primary[6],

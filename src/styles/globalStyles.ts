@@ -16,12 +16,12 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+    background: #f5f5f5;
   }
 
   ::-webkit-scrollbar-thumb {
     width: 10px;
- background: #d9d9d9;
+    /* background: #d9d9d9; */
     border-radius: 10px;
   }
   /* 火狐浏览器 */

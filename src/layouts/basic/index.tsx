@@ -19,27 +19,27 @@ const menu: MenuProps['items'] = [
   {
     key: '/data-center',
     label: '数据中心',
-    icon: <Icon name="main-data-center" />,
+    icon: <Icon name="main-center" />,
     children: [
       {
         key: '/visitor-list',
         label: '访客列表',
-        icon: <Icon name="main-visitor-list" />,
+        icon: <Icon name="main-visitor" size="1.2rem" />,
       },
       {
         key: '/track-list',
         label: '埋点列表',
-        icon: <Icon name="main-track-list" />,
+        icon: <Icon name="main-track" />,
       },
       {
         key: '/schedule-task',
         label: '定时任务',
-        icon: <Icon name="main-schedule-task" />,
+        icon: <Icon name="main-schedule" />,
       },
       {
         key: '/error-log',
         label: '错误日志',
-        icon: <Icon name="main-error-log" />,
+        icon: <Icon name="main-error" />,
       },
     ],
   },
@@ -51,17 +51,17 @@ const menu: MenuProps['items'] = [
       {
         key: '/user-list',
         label: '用户管理',
-        icon: <Icon name="main-user-list" />,
+        icon: <Icon name="main-viewer" />,
       },
       {
         key: '/role-list',
         label: '角色管理',
-        icon: <Icon name="main-role-list" />,
+        icon: <Icon name="main-role" />,
       },
       {
         key: '/permission-list',
         label: '权限管理',
-        icon: <Icon name="main-permission-list" />,
+        icon: <Icon name="main-permission" />,
       },
     ],
   },
@@ -73,19 +73,19 @@ const menu: MenuProps['items'] = [
       {
         key: '/article-list',
         label: '文章管理',
-        icon: <Icon name="main-article-list" />,
+        icon: <Icon name="main-article" />,
       },
       {
         key: '/comment-list',
         label: '评论管理',
-        icon: <Icon name="main-comment-list" />,
+        icon: <Icon name="main-comment" />,
       },
     ],
   },
   {
     key: '/about',
     label: '关于',
-    icon: <Icon name="main-setting" />,
+    icon: <Icon name="main-about" />,
   },
 ];
 

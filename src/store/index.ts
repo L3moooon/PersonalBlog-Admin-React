@@ -14,6 +14,7 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 
 import userReducer from './slices/userSlice'; //导入切片
 import ossReducer from './slices/ossSlice'; //导入切片
+import settingReducer from './slices/settingSlice'; //导入切片
 
 const encryptor = encryptTransform({
   secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,
@@ -24,12 +25,13 @@ const encryptor = encryptTransform({
 export const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user', 'oss'],
+  whitelist: ['user', 'oss', 'setting'],
   transforms: [encryptor],
 };
 const rootReducer = combineReducers({
   user: userReducer,
   oss: ossReducer,
+  setting: settingReducer,
 });
 //配置全局store
 export const store = configureStore({

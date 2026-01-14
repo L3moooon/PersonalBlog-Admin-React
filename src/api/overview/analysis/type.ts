@@ -1,6 +1,6 @@
 import type { CommonResponse } from '@/types/common';
 
-export interface GetNumDataResponse extends CommonResponse {
+export interface NumDataResponse extends CommonResponse {
   data: {
     visit: { total: number; today: number };
     article: { total: number; today: number };
@@ -13,6 +13,20 @@ export interface GeoDataItem {
   name: string;
   value: number;
 }
-export interface GetGeoDataResponse extends CommonResponse {
+export interface GeoDataResponse extends CommonResponse {
   data: Array<GeoDataItem>;
+}
+
+export type EchartsTimeData = Array<[string, number]>;
+//折线图数据
+export interface LineDataResponse extends CommonResponse {
+  data: {
+    day: EchartsTimeData;
+    week: EchartsTimeData;
+  };
+}
+
+//柱状图数据
+export interface BarDataResponse extends CommonResponse {
+  data: EchartsTimeData;
 }

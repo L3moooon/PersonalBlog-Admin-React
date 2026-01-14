@@ -1,6 +1,6 @@
 import { type MappingAlgorithm, type ThemeConfig, theme } from 'antd';
 
-import { ColorPalettes, genDarkMapTokenAlgorithm } from '../algorithms';
+import { type ColorPalettes, genDarkMapTokenAlgorithm } from './algorithms';
 
 const cyanColors = [
   'rgba(0, 225, 242, 0.12)',
@@ -39,8 +39,10 @@ const darkAlgorithm: MappingAlgorithm = (seedToken, mapToken) => ({
 
 export const darkTheme: ThemeConfig = {
   token: {
-    colorTextBase: '#c7ddff',
     colorBgBase: '#050608',
+
+    colorTextBase: '#c7ddff',
+    colorTextSecondary: '#666',
 
     colorLinkHover: darkColorPalettes.primary[7],
     colorLink: darkColorPalettes.primary[6],

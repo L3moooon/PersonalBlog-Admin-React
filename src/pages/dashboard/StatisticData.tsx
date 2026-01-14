@@ -1,4 +1,12 @@
-import { Card, Flex, Col, Row, Statistic, type StatisticProps } from 'antd';
+import {
+  Card,
+  Flex,
+  Col,
+  Row,
+  Statistic,
+  type StatisticProps,
+  theme,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { getNumData } from '@/api/overview/analysis';
 import { createStyles } from 'antd-style';
@@ -9,8 +17,10 @@ import pic2 from '@/assets/icons/filetext.png';
 import pic3 from '@/assets/icons/comment.png';
 import pic4 from '@/assets/icons/click.png';
 
+const { useToken } = theme;
+
 const formatter: StatisticProps['formatter'] = value => (
-  <CountUp end={value as number} separator="," />
+  <CountUp end={value as number} />
 );
 const useStyles = createStyles(() => ({
   img: {
@@ -38,7 +48,8 @@ type DataCardProps = {
 };
 const DataCard = (props: DataCardProps) => {
   const { styles } = useStyles();
-  console.log('data', props);
+  const { token } = useToken();
+  // console.log('data', props);
   const { title, total, subTitle, today, img } = props.data;
 
   return (
@@ -50,7 +61,11 @@ const DataCard = (props: DataCardProps) => {
             title={title}
             value={total}
             styles={{
-              title: { color: '#333', fontSize: '1.2rem', fontWeight: 'bold' },
+              title: {
+                color: token.colorTextBase,
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+              },
             }}
           />
           <div>
@@ -62,11 +77,14 @@ const DataCard = (props: DataCardProps) => {
               value={today}
               styles={{
                 header: { padding: '0' },
-                title: { fontSize: '0.8rem', lineHeight: '1rem' },
+                title: {
+                  fontSize: '0.8rem',
+                  lineHeight: '1rem',
+                },
                 content: {
                   fontSize: '1rem',
-                  color: '#7f7f7f',
                   marginLeft: '0.5rem',
+                  color: token.colorTextSecondary,
                 },
               }}
             />

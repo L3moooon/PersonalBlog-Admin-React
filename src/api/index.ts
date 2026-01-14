@@ -5,8 +5,8 @@ import axios, {
   type AxiosError,
 } from 'axios';
 import { messageApi, navigate } from '@/utils/globalInstance';
-import { getPersistItem } from '@/utils/getItem';
-import { useSelector } from 'react-redux';
+import { getToken } from '@/utils/getToken';
+
 // 创建 Axios 实例
 const request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -18,13 +18,12 @@ const request: AxiosInstance = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = useSelector((state: RootState) => state.user.token);
-    // const token = getPersistItem('user', 'token');
-    console.log(token);
+  async (config: InternalAxiosRequestConfig) => {
+    const token = await getToken();
+    // console.log(token);
     if (token && config.headers) {
       const payload = JSON.parse(atob(token.split('.')[1])); // 解析 token 的 payload
-      console.log(payload);
+      // console.log(payload);
       const expirationTime = payload.exp * 1000; // 转换为毫秒
       const currentTime = Date.now();
       if (currentTime > expirationTime) {

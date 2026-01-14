@@ -42,9 +42,9 @@ const MyAvatar = ({
     </>
   );
 };
-type TitleProps = {
+interface TitleProps {
   userInfo: LoginResponse['user'];
-};
+}
 
 const Title = ({ userInfo }: TitleProps) => {
   const { name, role_name, avatar } = userInfo;
@@ -84,10 +84,10 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-type ContentProps = {
+interface ContentProps {
   handleLockScreen: () => void;
   handleLogout: () => void;
-};
+}
 const Content = ({ handleLockScreen, handleLogout }: ContentProps) => {
   const { styles } = useStyles();
   const navigate = useNavigate();
