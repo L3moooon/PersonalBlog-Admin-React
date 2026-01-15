@@ -13,7 +13,7 @@ import {
 } from '@/store/slices/userSlice';
 import Icon from '@/components/Icon';
 import { Card } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const useStyles = createStyles(({ token }) => ({
   container: {
@@ -32,8 +32,9 @@ const useStyles = createStyles(({ token }) => ({
     padding: '0 1rem',
     height: '100%',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s ease',
     position: 'relative',
+    color: token.colorTextBase,
     border: `1px solid ${token.colorBorderSecondary}`,
     '&::after': {
       content: '""',
@@ -43,7 +44,7 @@ const useStyles = createStyles(({ token }) => ({
       width: 0,
       height: '1px',
       backgroundColor: token.colorPrimary,
-      transition: 'width 0.2s ease',
+      transition: 'width 0.3s ease',
     },
     '&:hover': {
       backgroundColor: token.controlItemBgHover,
@@ -62,6 +63,7 @@ const useStyles = createStyles(({ token }) => ({
       backgroundColor: token.controlItemBgActive,
     },
   },
+
   card: {},
   contextMenuItem: {
     display: 'flex',
@@ -84,39 +86,108 @@ const TabSet = () => {
   const { tabs, activeKey, fixedTabs } = useSelector(
     (state: RootState) => state.user
   );
-  // console.log(tabs, activeKey, fixedTabs);
+
   const [visible, setVisible] = useState(false);
   const [selectPath, setSelectPath] = useState('');
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleContextMenu = (e: React.MouseEvent, path: string) => {
-    console.log(e, path);
+  const contextMenuItemRef = useRef<HTMLDivElement>(null);
+  const contextMenu = [
+    {
+      label: '关闭',
+      icon: 'public-close',
+      onClick: () => dispatch(removeTab(selectPath)),
+    },
+    {
+      label: '固定',
+      icon: 'main-pin',
+      onClick: () => dispatch(togglePinTab(selectPath)),
+    },
+    {
+      label: '最大化',
+      icon: 'main-fullscreen',
+      onClick: () => toggleFullscreen(),
+    },
+    {
+      label: '重新加载',
+      icon: 'main-reload',
+      onClick: () => handleReload(),
+    },
+    {
+      label: '在新窗口打开',
+      icon: 'main-open',
+      onClick: () => handleOpenNewWindow(),
+    },
+    {
+      label: '关闭左侧标签页',
+      icon: 'main-close-left',
+      onClick: () => dispatch(closeLeftTabs(selectPath)),
+    },
+    {
+      label: '关闭右侧标签页',
+      icon: 'main-close-right',
+      onClick: () => dispatch(closeRightTabs(selectPath)),
+    },
+    {
+      label: '关闭其他标签页',
+      icon: 'main-close-other',
+      onClick: () => dispatch(closeOtherTabs(selectPath)),
+    },
 
+    {
+      label: '关闭全部标签页',
+      icon: 'main-close-all',
+      onClick: () => dispatch(closeAllTabs()),
+    },
+  ];
+  const handleContextMenu = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
+    e.stopPropagation();
     setVisible(true);
     setSelectPath(path);
     setPosition({ x: e.clientX, y: e.clientY });
   };
-  const toggleFullscreen = () => {};
-  const handleReload = () => {};
-  const handleOpenNewWindow = () => {};
-  // useEffect(() => {
-  //   const clickOutside = (e: MouseEvent) => {
-  //     console.log(e);
-  //     if (!e.composedPath().includes(document.getElementById('tab-set')!)) {
-  //       setVisible(false);
-  //     }
-  //   };
-  //   // window.addEventListener('contextmenu', () => setVisible(false));
-  //   window.addEventListener('click', clickOutside);
-  //   return () => {
-  //     window.removeEventListener('click', clickOutside);
-  //     // window.removeEventListener('contextmenu', () => setVisible(false));
-  //   };
-  // }, [tabs]);
+  const toggleFullscreen = () => {
+    // const element = document.documentElement;
+    // if (!document.fullscreenElement) {
+    //   element.requestFullscreen();
+    // } else {
+    //   document.exitFullscreen();
+    // }
+  };
+  const handleReload = () => {
+    window.location.reload();
+  };
+  const handleOpenNewWindow = () => {
+    window.open(window.location.origin + selectPath, '_blank');
+  };
+
+  useEffect(() => {
+    const handleClickOutSide = () => setVisible(false);
+    const handleContextOutSide = (e: MouseEvent) => {
+      if (!contextMenuItemRef.current) return;
+      if (!contextMenuItemRef.current.contains(e.target as Node)) {
+        setVisible(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutSide);
+    document.addEventListener('contextmenu', handleContextOutSide);
+    return () => {
+      document.removeEventListener('click', handleClickOutSide);
+      document.removeEventListener('contextmenu', handleContextOutSide);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!tabs.some((tab: TabItem) => tab.path === activeKey)) {
+      const lastTab = tabs[tabs.length - 1];
+      dispatch(changeTab(lastTab.path));
+    }
+  }, [tabs]);
+
   return (
     <div className={styles.container}>
-      {tabs.map(tab => (
+      {tabs.map((tab: TabItem) => (
         <div
           className={cx(
             styles.tabItem,
@@ -126,11 +197,15 @@ const TabSet = () => {
           onClick={() => dispatch(changeTab(tab.path))}
           onContextMenu={e => handleContextMenu(e, tab.path)}
         >
-          {tab.title}
+          <Icon name={tab.icon} />
+          <div className={styles.text}>{tab.title}</div>
           {fixedTabs.includes(tab.path) && (
             <Icon
               name="main-pin"
-              onClick={() => dispatch(togglePinTab(tab.path))}
+              onClick={e => {
+                e.stopPropagation();
+                dispatch(togglePinTab(tab.path));
+              }}
             />
           )}
           {!fixedTabs.includes(tab.path) && tabs.length > 1 && (
@@ -143,6 +218,7 @@ const TabSet = () => {
       ))}
       {visible && (
         <Card
+          ref={contextMenuItemRef}
           id="tab-set"
           size="small"
           style={{
@@ -155,63 +231,20 @@ const TabSet = () => {
           }}
           styles={{ body: { padding: '0.5rem' } }}
         >
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(removeTab(selectPath))}
-          >
-            <Icon name="public-close" />
-            <span>关闭</span>
-          </div>
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(togglePinTab(selectPath))}
-          >
-            <Icon name="main-pin" />
-            <span>固定</span>
-          </div>
-          <div className={styles.contextMenuItem} onClick={toggleFullscreen}>
-            <Icon name="main-fullscreen" />
-            <span>最大化</span>
-          </div>
-          <div className={styles.contextMenuItem} onClick={handleReload}>
-            <Icon name="main-reload" />
-            <span>重新加载</span>
-          </div>
-          <div className={styles.contextMenuItem} onClick={handleOpenNewWindow}>
-            <Icon name="main-open" />
-            <span>在新窗口打开</span>
-          </div>
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(closeLeftTabs(selectPath))}
-          >
-            <Icon name="main-close-left" />
-            <span>关闭左侧标签页</span>
-          </div>
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(closeRightTabs(selectPath))}
-          >
-            <Icon name="main-close-right" />
-            <span>关闭右侧标签页</span>
-          </div>
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(closeOtherTabs(selectPath))}
-          >
-            <Icon name="main-close-other" />
-            <span>关闭其他标签页</span>
-          </div>
-          <div
-            className={styles.contextMenuItem}
-            onClick={() => dispatch(closeAllTabs(selectPath))}
-          >
-            <Icon name="main-close-all" />
-            <span>关闭全部标签页</span>
-          </div>
+          {contextMenu.map((item, index) => (
+            <div
+              className={styles.contextMenuItem}
+              onClick={() => item.onClick()}
+              key={index}
+            >
+              <Icon name={item.icon} />
+              <span>{item.label}</span>
+            </div>
+          ))}
         </Card>
       )}
     </div>
   );
 };
+
 export default TabSet;

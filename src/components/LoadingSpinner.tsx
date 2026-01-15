@@ -1,19 +1,41 @@
 import { Spin } from 'antd';
+import Icon from '@/components/Icon';
+import { createStyles } from 'antd-style';
+import { theme } from 'antd';
+
+const { useToken } = theme;
+import { iconRotate } from '@/styles/animation';
+const useStyles = createStyles(({ token }) => ({
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    color: token.colorPrimary,
+  },
+  icon: {
+    animation: `${iconRotate} 1s linear infinite`,
+  },
+}));
 
 const LoadingSpinner = () => {
+  const { styles } = useStyles();
+  const { token } = useToken();
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100vw',
-        height: '100vh',
-        flexDirection: 'column',
-      }}
-    >
-      <Spin size="large" />
-      <div style={{ marginTop: '1rem' }}>加载中...</div>
+    <div className={styles.container}>
+      <Spin
+        size="large"
+        fullscreen
+        tip="加载中..."
+        styles={{
+          mask: {
+            backgroundColor: 'transparent',
+            backdropFilter: 'blur(10px)',
+          },
+          tip: { color: token.colorPrimary },
+        }}
+        indicator={<Icon name="main-spinner" className={styles.icon} />}
+      />
     </div>
   );
 };

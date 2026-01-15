@@ -11,7 +11,7 @@ const Setting = () => {
   };
   return (
     <>
-      <Icon name="main-setting" size="1.2rem" onClick={showDrawer} />
+      <Icon name="main-setting" size="1.1rem" onClick={showDrawer} />
       <Drawer
         title="Basic Drawer"
         closable={false}

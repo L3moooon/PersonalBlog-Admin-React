@@ -35,14 +35,6 @@ const initialState: UserState = {
   fixedTabs: ['/dashboard'], //固定的标签页
 };
 
-// 提取切换默认标签页的公共逻辑
-const activeDefaultTab = (state: UserState) => {
-  if (!state.tabs.includes(state.activeKey)) {
-    state.activeKey = state.tabs[state.tabs.length - 1];
-    navigate(state.activeKey);
-  }
-};
-
 // 创建用户切片
 const userSlice = createSlice({
   name: 'user',
@@ -87,6 +79,7 @@ const userSlice = createSlice({
       if (!state.tabs.some(tab => tab.path === path)) {
         state.tabs.push(action.payload);
       }
+      state.activeKey = path;
     },
     //切换标签页
     changeTab: (state, action: PayloadAction<string>) => {
@@ -95,10 +88,6 @@ const userSlice = createSlice({
     },
     //删除标签页
     removeTab: (state, action: PayloadAction<string>) => {
-      if (state.activeKey === action.payload) {
-        state.activeKey = state.tabs[state.tabs.length - 1];
-        navigate(state.activeKey);
-      }
       state.tabs = state.tabs.filter(tab => tab.path !== action.payload);
     },
     //固定/取消固定
@@ -111,32 +100,30 @@ const userSlice = createSlice({
     },
     //关闭左侧Tab(保留固定的tab)
     closeLeftTabs: (state, action: PayloadAction<string>) => {
-      const { path } = action.payload;
-      const index = state.tabs.indexOf(path);
+      const path = action.payload;
+      const index = state.tabs.findIndex(tab => tab.path === path);
       state.tabs = state.tabs.filter(
-        (tab, i) => i >= index && state.fixedTabs.includes(tab)
+        (tab, i) => i >= index || state.fixedTabs.includes(tab.path)
       );
-      activeDefaultTab(state);
     },
     //关闭右侧Tab(保留固定的tab)
     closeRightTabs: (state, action: PayloadAction<string>) => {
-      const index = state.tabs.indexOf(action.payload);
+      const path = action.payload;
+      const index = state.tabs.findIndex(tab => tab.path === path);
       state.tabs = state.tabs.filter(
-        (tab, i) => i <= index && state.fixedTabs.includes(tab)
+        (tab, i) => i <= index || state.fixedTabs.includes(tab.path)
       );
-      activeDefaultTab(state);
     },
     //关闭其他Tab(保留固定的tab)
     closeOtherTabs: (state, action: PayloadAction<string>) => {
+      const path = action.payload;
       state.tabs = state.tabs.filter(
-        tab => state.fixedTabs.includes(tab) || tab === action.payload
+        tab => state.fixedTabs.includes(tab.path) || tab.path === path
       );
-      activeDefaultTab(state);
     },
     //关闭所有
     closeAllTabs: state => {
-      state.tabs = state.fixedTabs;
-      activeDefaultTab(state);
+      state.tabs = state.tabs.filter(tab => state.fixedTabs.includes(tab.path));
     },
   },
 });

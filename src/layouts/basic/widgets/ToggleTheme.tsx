@@ -25,7 +25,7 @@ const ToggleTheme = () => {
       ) : (
         <Icon
           name="main-sun"
-          size="1.4rem"
+          size="1.25rem"
           onClick={() => handleChangeTheme('light')}
         />
       )}
