@@ -35,6 +35,27 @@ export const iconScale = keyframes`
     transform: scale(1);
   }
 `;
+//图标动画-左右晃动
+export const iconShake = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-20deg);
+  }
+  40% {
+    transform: rotate(20deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+`;
 //图标动画-旋转
 export const iconRotate = keyframes`
   0% {

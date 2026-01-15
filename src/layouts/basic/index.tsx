@@ -1,93 +1,17 @@
-import { useState, useCallback } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useState, useMemo, type ReactNode } from 'react';
+import { useNavigate, Outlet, useLocation, Link } from 'react-router-dom';
 import { Flex, Button, Layout, Menu, Breadcrumb, type MenuProps } from 'antd';
 import { createStyles, cx, keyframes } from 'antd-style';
+import type { MenuItemType, SubMenuType } from 'antd/es/menu/interface';
 
 import Icon from '@/components/Icon';
 import mainLogo from '@/assets/images/portrait.jpg';
 import TabSet from './TabSet';
 import Widgets from './widgets/index.tsx';
 
-const { Header, Content, Sider } = Layout;
+import { routes, type RouteItem } from '@/router/routes';
 
-const menu: MenuProps['items'] = [
-  {
-    key: '/dashboard',
-    label: '仪表盘',
-    icon: <Icon name="main-dashboard" />,
-  },
-  {
-    key: '/data-center',
-    label: '数据中心',
-    icon: <Icon name="main-center" />,
-    children: [
-      {
-        key: '/visitor-list',
-        label: '访客列表',
-        icon: <Icon name="main-visitor" size="1.2rem" />,
-      },
-      {
-        key: '/track-list',
-        label: '埋点列表',
-        icon: <Icon name="main-track" />,
-      },
-      {
-        key: '/schedule-task',
-        label: '定时任务',
-        icon: <Icon name="main-schedule" />,
-      },
-      {
-        key: '/error-log',
-        label: '错误日志',
-        icon: <Icon name="main-error" />,
-      },
-    ],
-  },
-  {
-    key: '/console',
-    label: '控制台',
-    icon: <Icon name="main-console" />,
-    children: [
-      {
-        key: '/user-list',
-        label: '用户管理',
-        icon: <Icon name="main-viewer" />,
-      },
-      {
-        key: '/role-list',
-        label: '角色管理',
-        icon: <Icon name="main-role" />,
-      },
-      {
-        key: '/permission-list',
-        label: '权限管理',
-        icon: <Icon name="main-permission" />,
-      },
-    ],
-  },
-  {
-    key: '/content',
-    label: '内容管理',
-    icon: <Icon name="main-content" />,
-    children: [
-      {
-        key: '/article-list',
-        label: '文章管理',
-        icon: <Icon name="main-article" />,
-      },
-      {
-        key: '/comment-list',
-        label: '评论管理',
-        icon: <Icon name="main-comment" />,
-      },
-    ],
-  },
-  {
-    key: '/about',
-    label: '关于',
-    icon: <Icon name="main-about" />,
-  },
-];
+const { Header, Content, Sider } = Layout;
 
 //消失
 const disappear = keyframes`
@@ -167,7 +91,7 @@ const useStyles = createStyles(({ token }) => ({
     borderBottom: `1px solid ${token.colorBorderSecondary}`,
   },
   content: {
-    padding: '0 1.5rem 1.5rem',
+    padding: '1rem',
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
     background: token.colorBgLayout,
@@ -180,19 +104,110 @@ const BasicIndex = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { styles } = useStyles();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleJump = useCallback(
-    (e: { key: string }) => {
-      navigate(e.key);
-    },
-    [navigate]
-  );
+  // 动态生成面包屑数据
+  const breadcrumbItems = useMemo(() => {
+    const list: { title: ReactNode; key?: string }[] = [];
+    const pathname = location.pathname;
+
+    const findPathLevels = (
+      routesList: RouteItem[],
+      targetPath: string,
+      parentPath = ''
+    ): boolean => {
+      for (const route of routesList) {
+        // 计算当前节点的完整路径
+        const fullPath = (
+          route.path.startsWith('/')
+            ? route.path
+            : `${parentPath}/${route.path}`
+        ).replace(/\/+/g, '/');
+
+        // 检查路径是否匹配
+        const isExactMatch = targetPath === fullPath;
+        const isChildPath = targetPath.startsWith(
+          fullPath.endsWith('/') ? fullPath : fullPath + '/'
+        );
+
+        if (isExactMatch || isChildPath) {
+          if (route.meta?.title) {
+            const isLast = isExactMatch;
+            list.push({
+              title: isLast ? (
+                <Flex align="center" gap={4}>
+                  <Icon name={route.meta.icon} />
+                  <span>{route.meta.title}</span>
+                </Flex>
+              ) : (
+                <Link
+                  to={fullPath}
+                  style={{
+                    color: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <Icon name={route.meta.icon} />
+                  <span>{route.meta.title}</span>
+                </Link>
+              ),
+              key: fullPath,
+            });
+          }
+
+          if (isExactMatch) return true;
+
+          if (route.children) {
+            return findPathLevels(route.children, targetPath, fullPath);
+          }
+        }
+      }
+      return false;
+    };
+
+    findPathLevels(routes, pathname);
+    return list;
+  }, [location.pathname]);
+  const menuItems: MenuProps['items'] = useMemo(() => {
+    const menuRoutes = routes.find(
+      (route: RouteItem) => route.path == '/'
+    )?.children;
+
+    const formatRoutes = (list: RouteItem[]) => {
+      const filteredRoutes = list.filter(route => !route.meta?.hidden);
+      return filteredRoutes.map(
+        (route: RouteItem): MenuItemType | SubMenuType => {
+          if (route.children) {
+            return {
+              key: route.path,
+              label: route.meta.title,
+              icon: <Icon name={route.meta.icon} />,
+              children: formatRoutes(route.children),
+            } as SubMenuType;
+          } else {
+            return {
+              key: route.path,
+              label: route.meta.title,
+              icon: <Icon name={route.meta.icon} />,
+            } as MenuItemType;
+          }
+        }
+      );
+    };
+    return formatRoutes(menuRoutes || []) || [];
+  }, []);
+
+  const handleJump = ({ key }: { key: string }) => {
+    navigate(key);
+  };
 
   return (
     <Layout className={styles.main}>
       <Sider
         theme="light"
-        width={200}
+        width="12%"
         collapsible
         trigger={null}
         collapsed={collapsed}
@@ -214,7 +229,7 @@ const BasicIndex = () => {
           mode="inline"
           defaultSelectedKeys={['/dashboard']}
           onClick={handleJump}
-          items={menu}
+          items={menuItems}
           className={styles.menu}
           inlineCollapsed={collapsed}
         />
@@ -233,15 +248,12 @@ const BasicIndex = () => {
                 )
               }
             />
-            <Breadcrumb
-              className={styles.breadcrumb}
-              items={[{ title: '首页' }, { title: '仪表盘' }]}
-            />
+            <Breadcrumb className={styles.breadcrumb} items={breadcrumbItems} />
           </Flex>
           <Widgets />
         </Header>
+        <TabSet />
         <Content className={styles.content}>
-          <TabSet />
           <Outlet />
         </Content>
       </Layout>

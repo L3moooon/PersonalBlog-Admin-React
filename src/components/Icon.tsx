@@ -1,8 +1,8 @@
-import { type FC, type SVGProps } from 'react';
+import { type SVGProps } from 'react';
 import { cx, createStyles } from 'antd-style';
 // 定义 Icon 组件的 Props
 interface IconProps extends SVGProps<SVGSVGElement> {
-  name: string; // 图标名称（对应 symbolId：如 icon-user-add、icon-nav-home）
+  name?: string; // 图标名称（对应 symbolId：如 icon-user-add、icon-nav-home）
   size?: number | string; // 图标大小（
 }
 const useStyles = createStyles(() => ({
@@ -11,13 +11,13 @@ const useStyles = createStyles(() => ({
     cursor: 'pointer',
   },
 }));
-const Icon: FC<IconProps> = ({
+const Icon = ({
   name,
   size = '1rem',
   className,
   style,
   ...rest
-}) => {
+}: IconProps) => {
   const { styles } = useStyles();
   const symbolId = `#icon-${name}`;
   const sizeStyle = {

@@ -11,8 +11,8 @@ import { iconScale } from '@/styles/animation';
 
 const useStyle = createStyles(({ token }) => ({
   widgetItem: {
-    width: '1.8rem',
-    height: '1.8rem',
+    width: '2rem',
+    height: '2rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -20,8 +20,12 @@ const useStyle = createStyles(({ token }) => ({
     transition: 'all 0.3s ease',
     borderRadius: '50%',
     '&:hover': {
-      backgroundColor: token.colorFillTertiary,
+      // backgroundColor: token.colorFillTertiary,
+      backgroundColor: token.colorBgContainerDisabled,
       animation: `${iconScale} 0.5s ease`,
+    },
+    '&:nth-last-child(2)': {
+      animation: 'none',
     },
     '&:last-child': {
       width: '2.7rem',
@@ -40,7 +44,7 @@ const Widgets = () => {
     <User />,
   ];
   return (
-    <Flex justify="space-between" align="center" gap={8}>
+    <Flex justify="space-between" align="center" gap={5}>
       {component.map((item, index) => (
         <div className={styles.widgetItem} key={index}>
           {item}
