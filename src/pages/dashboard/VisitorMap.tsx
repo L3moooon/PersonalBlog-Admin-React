@@ -1,8 +1,8 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { Card } from 'antd';
 import { createStyles } from 'antd-style';
-import { getGeoData } from '@/api/overview/analysis';
-import type { GeoDataItem } from '@/api/overview/analysis/type';
+import { getGeoData } from '@/api/dashboard';
+import type { GeoDataItem } from '@/api/dashboard/type';
 import chinaGeo from '@/assets/geo/china.json';
 
 import * as echarts from 'echarts/core';

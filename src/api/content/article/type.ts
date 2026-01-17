@@ -38,8 +38,8 @@ export interface UpgradeArticleRequest {
   content?: string;
   // author_name: string;
   tag?: Array<number>;
-  top?: number;
-  status?: number; // 1: 公开, 0: 隐藏
+  top?: boolean;
+  status?: boolean; // 1: 公开, 0: 隐藏
 }
 
 export interface TagItem {

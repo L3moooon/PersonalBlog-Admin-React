@@ -7,7 +7,7 @@ export interface Role {
   description: string;
   create_time: string;
   update_time: string;
-  status: number;
+  status: boolean;
   permission_ids: Array<number>;
 }
 

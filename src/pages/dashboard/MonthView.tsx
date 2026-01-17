@@ -1,7 +1,7 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { createStyles } from 'antd-style';
-import { getBarData } from '@/api/overview/analysis';
-import type { EchartsTimeData } from '@/api/overview/analysis/type';
+import { getBarData } from '@/api/dashboard';
+import type { EchartsTimeData } from '@/api/dashboard/type';
 
 import * as echarts from 'echarts/core';
 import { BarChart } from 'echarts/charts';

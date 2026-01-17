@@ -91,7 +91,7 @@ const useStyles = createStyles(({ token }) => ({
     borderBottom: `1px solid ${token.colorBorderSecondary}`,
   },
   content: {
-    padding: '1rem',
+    // padding: '1rem',
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
     background: token.colorBgLayout,

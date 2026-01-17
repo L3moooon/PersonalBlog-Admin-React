@@ -12,8 +12,8 @@ const root = document.getElementById('root')!;
 ReactDOM.createRoot(root).render(
   <StrictMode>
     <ReduxPersistProvider>
-      <GlobalStyles />
       <AntdThemeProvider>
+        <GlobalStyles />
         <BrowserRouter>
           <App />
         </BrowserRouter>

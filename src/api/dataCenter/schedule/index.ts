@@ -1,8 +1,5 @@
-import request from '@/utils/request';
-import type {
-  SimpleCommonListRequest,
-  CommonListResponse,
-} from '@/types/common';
+import request from '@/api';
+import type { SimpleCommonListRequest } from '@/types/common';
 import type {
   BackupLogResponse,
   RebootLogResponse,

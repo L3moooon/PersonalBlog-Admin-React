@@ -8,7 +8,7 @@ import {
   theme,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { getNumData } from '@/api/overview/analysis';
+import { getNumData } from '@/api/dashboard';
 import { createStyles } from 'antd-style';
 import CountUp from 'react-countup';
 

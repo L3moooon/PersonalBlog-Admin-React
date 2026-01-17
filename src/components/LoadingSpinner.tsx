@@ -12,6 +12,11 @@ const useStyles = createStyles(({ token }) => ({
     alignItems: 'center',
     flexDirection: 'column',
     color: token.colorPrimary,
+
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   },
   icon: {
     animation: `${iconRotate} 1s linear infinite`,
@@ -25,8 +30,6 @@ const LoadingSpinner = () => {
     <div className={styles.container}>
       <Spin
         size="large"
-        fullscreen
-        tip="加载中..."
         styles={{
           mask: {
             backgroundColor: 'transparent',

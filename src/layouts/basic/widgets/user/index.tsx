@@ -112,9 +112,7 @@ const Content = ({ handleLockScreen, handleLogout }: ContentProps) => {
   );
 };
 const User = () => {
-  const { userInfo, lockScreen } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { userInfo } = useSelector((state: RootState) => state.user);
   const { avatar, name } = userInfo;
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -217,7 +215,7 @@ const User = () => {
           </Button>
         </Flex>
       </Modal>
-      {lockScreen && <LockScreen />}
+      <LockScreen />
     </>
   );
 };

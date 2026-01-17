@@ -86,6 +86,7 @@ const LockScreen = () => {
       open={lockScreen}
       closable={false}
       centered={true}
+      destroyOnHidden={true}
       width="100vw"
       style={{
         maxWidth: '100vw',

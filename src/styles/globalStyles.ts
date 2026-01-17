@@ -21,18 +21,7 @@ export const GlobalStyles = createGlobalStyle`
 
   ::-webkit-scrollbar-thumb {
     width: 10px;
-    /* background: #d9d9d9; */
+    background: #d9d9d9;
     border-radius: 10px;
-  }
-  /* 火狐浏览器 */
-  body {
-    scrollbar-width: thin; /* auto | thin | none */
-    scrollbar-color: gray white; /* 滚动条拇指颜色 轨道颜色 */
-  }
-
-  /* IE/Edge 浏览器（兼容性较差，一般不做特殊处理） */
-  body {
-    -ms-overflow-style: scrollbar; /* 恢复默认滚动条 */
-    /* 或隐藏：-ms-overflow-style: none; */
   }
 `;

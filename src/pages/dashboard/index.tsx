@@ -14,7 +14,11 @@ const Dashboard = () => {
     }
   };
   return (
-    <Space orientation="vertical" size="large" style={{ width: '100%' }}>
+    <Space
+      orientation="vertical"
+      size="large"
+      style={{ width: '100%', padding: '1rem' }}
+    >
       <StatisticData />
       <Card>
         <Segmented

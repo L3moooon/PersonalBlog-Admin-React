@@ -1,4 +1,3 @@
-import { Flex } from 'antd';
 import { createStyles } from 'antd-style';
 
 const useStyles = createStyles(({ token }) => ({
@@ -7,6 +6,14 @@ const useStyles = createStyles(({ token }) => ({
     width: '100%',
     height: '4rem',
     backgroundColor: token.colorBgContainer,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 10,
+    padding: '1rem',
+  },
+  placeholder: {
+    height: '4rem',
   },
   title: {
     fontSize: '1.5rem',
@@ -27,10 +34,13 @@ const PageHeader = (props: Props) => {
   const { title, desc } = props;
   const { styles } = useStyles();
   return (
-    <div className={styles.container}>
-      <div className={styles.title}>{title}</div>
-      <div className={styles.desc}>{desc}</div>
-    </div>
+    <>
+      <div className={styles.container}>
+        <div className={styles.title}>{title}</div>
+        <div className={styles.desc}>{desc}</div>
+      </div>
+      <div className={styles.placeholder}></div>
+    </>
   );
 };
 export default PageHeader;
