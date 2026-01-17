@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from 'react';
 
 import { getStatusLog } from '@/api/dataCenter/schedule/index';
 import type { StatusLogItem } from '@/api/dataCenter/schedule/type';
+import HasAuth from '@/components/HasAuth';
 
 const Status = () => {
   const [queryParams, setQueryParams] = useState<CommonListRequest>({
@@ -68,9 +69,11 @@ const Status = () => {
       {
         title: '操作',
         dataIndex: 'action',
-        render: () => {
-          return <Button>删除</Button>;
-        },
+        render: () => (
+          <HasAuth code="dataCenter:backup:delete">
+            <Button type="link">删除</Button>
+          </HasAuth>
+        ),
       },
     ],
     []

@@ -1,8 +1,8 @@
-import { Table, Tag, Tooltip, type TableProps } from 'antd';
+import { Table, Tag, Tooltip, Button, type TableProps } from 'antd';
 import type { CommonListRequest } from '@/types/common';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
-
+import HasAuth from '@/components/HasAuth';
 import { getBackupLog } from '@/api/dataCenter/schedule/index';
 import type { BackupLogItem } from '@/api/dataCenter/schedule/type';
 
@@ -84,8 +84,12 @@ const Backup = () => {
       {
         title: '操作',
         dataIndex: 'action',
-        render: (action: string) => {
-          return action;
+        render: () => {
+          return (
+            <HasAuth code="dataCenter:backup:delete">
+              <Button type="link">删除</Button>
+            </HasAuth>
+          );
         },
       },
     ],

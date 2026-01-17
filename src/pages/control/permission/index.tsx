@@ -1,4 +1,4 @@
-import { Space, Card, Table, Button, Switch, type TableProps } from 'antd';
+import { Space, Card, Table, Button, type TableProps } from 'antd';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
 
@@ -7,6 +7,7 @@ import type { Permission } from '@/api/control/permission/type';
 import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
 import TableFunction from '@/components/TableFunction';
+import HasAuth from '@/components/HasAuth';
 
 const PermissionList = () => {
   const [loading, setLoading] = useState(false);
@@ -65,24 +66,22 @@ const PermissionList = () => {
         dataIndex: 'actions',
         render: (_, record) => (
           <Space size={8}>
-            <Switch
-              checked={record.disabled}
-              checkedChildren="启用"
-              unCheckedChildren="禁用"
-              // onChange={() => updateArticleTop(record)}
-            />
-            <Icon
-              name="table-edit"
-              onClick={() => {
-                console.log(record);
-              }}
-            />
-            <Icon
-              name="table-delete"
-              onClick={() => {
-                console.log(record);
-              }}
-            />
+            <HasAuth code="control:permission:active">
+              <Icon
+                name="table-edit"
+                onClick={() => {
+                  console.log(record);
+                }}
+              />
+            </HasAuth>
+            <HasAuth code="control:permission:delete">
+              <Icon
+                name="table-delete"
+                onClick={() => {
+                  console.log(record);
+                }}
+              />
+            </HasAuth>
           </Space>
         ),
       },

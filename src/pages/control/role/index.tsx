@@ -7,6 +7,7 @@ import type { Role } from '@/api/control/role/type';
 import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
 import TableFunction from '@/components/TableFunction';
+import HasAuth from '@/components/HasAuth';
 
 const RoleList = () => {
   const [loading, setLoading] = useState(false);
@@ -44,24 +45,30 @@ const RoleList = () => {
         dataIndex: 'actions',
         render: (_, record) => (
           <Space size={8}>
-            <Switch
-              checked={record.status}
-              checkedChildren="启用"
-              unCheckedChildren="禁用"
-              // onChange={() => updateArticleTop(record)}
-            />
-            <Icon
-              name="table-edit"
-              onClick={() => {
-                console.log(record);
-              }}
-            />
-            <Icon
-              name="table-delete"
-              onClick={() => {
-                console.log(record);
-              }}
-            />
+            <HasAuth code="control:role:active">
+              <Switch
+                checked={record.status}
+                checkedChildren="启用"
+                unCheckedChildren="禁用"
+                // onChange={() => updateArticleTop(record)}
+              />
+            </HasAuth>
+            <HasAuth code="control:role:edit">
+              <Icon
+                name="table-edit"
+                onClick={() => {
+                  console.log(record);
+                }}
+              />
+            </HasAuth>
+            <HasAuth code="control:role:delete">
+              <Icon
+                name="table-delete"
+                onClick={() => {
+                  console.log(record);
+                }}
+              />
+            </HasAuth>
           </Space>
         ),
       },

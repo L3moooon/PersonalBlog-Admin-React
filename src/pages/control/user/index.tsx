@@ -3,7 +3,7 @@ import { Space, Card, Table, Image, Switch, type TableProps } from 'antd';
 import type { CommonListRequest } from '@/types/common';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
-
+import HasAuth from '@/components/HasAuth';
 import {
   getAdminList,
   // changeUserStatus,
@@ -90,14 +90,16 @@ const UserList = () => {
         title: '操作',
         dataIndex: 'actions',
         render: (_, record) => (
-          <Space size={8}>
-            <Switch
-              checked={record.top}
-              checkedChildren="启用"
-              unCheckedChildren="拉黑"
-              // onChange={() => updateArticleTop(record)}
-            />
-          </Space>
+          <HasAuth code="control:user:edit">
+            <Space size={8}>
+              <Switch
+                checked={record.top}
+                checkedChildren="启用"
+                unCheckedChildren="拉黑"
+                // onChange={() => updateArticleTop(record)}
+              />
+            </Space>
+          </HasAuth>
         ),
       },
     ],

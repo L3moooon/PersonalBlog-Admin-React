@@ -11,7 +11,6 @@ export const fadeUp = keyframes`
     transform: translateY(0);
   }
 `;
-
 export const fadeOutDown = keyframes`
   from {
     opacity: 0.9;
@@ -20,6 +19,28 @@ export const fadeOutDown = keyframes`
   to {
     opacity: 0;
     transform: translateY(-10px);
+  }
+`;
+
+//移入移出(左右)
+export const fadeLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+export const fadeRight = keyframes`
+  from {
+    opacity: 1;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(0);
   }
 `;
 

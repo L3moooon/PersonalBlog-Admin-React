@@ -1,11 +1,8 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
-  Image,
   Space,
   Tooltip,
-  Tag,
   Card,
-  Button,
   Switch,
   Table,
   Popconfirm,
@@ -16,10 +13,10 @@ import type { CommonListRequest } from '@/types/common';
 import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
 import TableFunction from '@/components/TableFunction';
+import HasAuth from '@/components/HasAuth';
 
 import { timeFormatter } from '@/utils/timeFormatter';
 import { type Dayjs } from 'dayjs';
-import { messageApi } from '@/utils/globalInstance';
 import { getCommentList } from '@/api/content/comment';
 import type { CommentItem } from '@/api/content/comment/type';
 
@@ -56,9 +53,6 @@ const CommentList = () => {
       console.log('Clear');
     }
   };
-  const refreshList = useCallback(() => {
-    setQueryParams(prev => ({ ...prev }));
-  }, []);
 
   const columns: TableProps<CommentItem>['columns'] = useMemo(
     () => [
@@ -116,12 +110,14 @@ const CommentList = () => {
         fixed: true,
         render: (_, record) => (
           <Space size={8}>
-            <Switch
-              checked={record.status}
-              checkedChildren="显示"
-              unCheckedChildren="隐藏"
-              // onChange={() => updateArticleShow(record)}
-            />
+            <HasAuth code="content:comment:show">
+              <Switch
+                checked={record.status}
+                checkedChildren="显示"
+                unCheckedChildren="隐藏"
+                // onChange={() => updateArticleShow(record)}
+              />
+            </HasAuth>
             <Popconfirm
               title="确定要删除这条评论吗？"
               // onConfirm={() => deleteArticle(record)}
@@ -129,7 +125,9 @@ const CommentList = () => {
               okText="确定"
               cancelText="取消"
             >
-              <Icon name="table-delete" />
+              <HasAuth code="content:comment:delete">
+                <Icon name="table-delete" />
+              </HasAuth>
             </Popconfirm>
           </Space>
         ),

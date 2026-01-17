@@ -1,10 +1,11 @@
-import { Table, Tag, type TableProps } from 'antd';
+import { Table, Tag, Button, type TableProps } from 'antd';
 import type { CommonListRequest } from '@/types/common';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
 
 import { getRebootLog } from '@/api/dataCenter/schedule/index';
 import type { RebootLogItem } from '@/api/dataCenter/schedule/type';
+import HasAuth from '@/components/HasAuth';
 
 const Reboot = () => {
   const [queryParams, setQueryParams] = useState<CommonListRequest>({
@@ -55,9 +56,11 @@ const Reboot = () => {
       {
         title: '操作',
         dataIndex: 'action',
-        render: (action: string) => {
-          return action;
-        },
+        render: () => (
+          <HasAuth code="dataCenter:backup:delete">
+            <Button type="link">删除</Button>
+          </HasAuth>
+        ),
       },
     ],
     []

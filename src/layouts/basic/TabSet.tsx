@@ -32,7 +32,7 @@ const useStyles = createStyles(({ token }) => ({
     padding: '0 1rem',
     height: '100%',
     cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    // transition: 'all 0.3s ease',
     position: 'relative',
     color: token.colorTextBase,
     border: `1px solid ${token.colorBorderSecondary}`,
@@ -181,7 +181,11 @@ const TabSet = () => {
   useEffect(() => {
     if (!tabs.some((tab: TabItem) => tab.path === activeKey)) {
       const lastTab = tabs[tabs.length - 1];
-      dispatch(changeTab(lastTab.path));
+      if (lastTab) {
+        dispatch(changeTab(lastTab.path));
+      } else {
+        dispatch(changeTab('/'));
+      }
     }
   }, [tabs]);
 

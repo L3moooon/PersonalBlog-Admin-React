@@ -8,6 +8,7 @@ import Icon from '@/components/Icon';
 import mainLogo from '@/assets/images/portrait.jpg';
 import TabSet from './TabSet';
 import Widgets from './widgets/index.tsx';
+import { fadeLeft } from '@/styles/animation.ts';
 
 import { routes, type RouteItem } from '@/router/routes';
 
@@ -95,6 +96,7 @@ const useStyles = createStyles(({ token }) => ({
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
     background: token.colorBgLayout,
+    animation: `${fadeLeft} 0.5s ease forwards`,
   },
   breadcrumb: {
     margin: '16px 0',
@@ -227,7 +229,7 @@ const BasicIndex = () => {
         </div>
         <Menu
           mode="inline"
-          defaultSelectedKeys={['/dashboard']}
+          selectedKeys={[location.pathname]}
           onClick={handleJump}
           items={menuItems}
           className={styles.menu}
@@ -253,7 +255,7 @@ const BasicIndex = () => {
           <Widgets />
         </Header>
         <TabSet />
-        <Content className={styles.content}>
+        <Content key={location.pathname} className={styles.content}>
           <Outlet />
         </Content>
       </Layout>

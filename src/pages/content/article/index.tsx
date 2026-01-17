@@ -24,6 +24,7 @@ import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
 import TableFunction from '@/components/TableFunction';
 import PublishArticle from './PublishArticle';
+import HasAuth from '@/components/HasAuth';
 
 import { timeFormatter } from '@/utils/timeFormatter';
 import defaultImg from '@/assets/images/default-cover.png';
@@ -240,19 +241,25 @@ const Article = () => {
         fixed: true,
         render: (_, record) => (
           <Space size={8}>
-            <Switch
-              checked={record.top}
-              checkedChildren="置顶"
-              unCheckedChildren="默认"
-              onChange={() => updateArticleTop(record)}
-            />
-            <Switch
-              checked={record.status}
-              checkedChildren="公开"
-              unCheckedChildren="隐藏"
-              onChange={() => updateArticleShow(record)}
-            />
-            <Icon name="table-edit" onClick={() => editArticle(record)} />
+            <HasAuth code="content:article:top">
+              <Switch
+                checked={record.top}
+                checkedChildren="置顶"
+                unCheckedChildren="默认"
+                onChange={() => updateArticleTop(record)}
+              />
+            </HasAuth>
+            <HasAuth code="content:article:show">
+              <Switch
+                checked={record.status}
+                checkedChildren="公开"
+                unCheckedChildren="隐藏"
+                onChange={() => updateArticleShow(record)}
+              />
+            </HasAuth>
+            <HasAuth code="content:article:edit">
+              <Icon name="table-edit" onClick={() => editArticle(record)} />
+            </HasAuth>
             <Popconfirm
               title="确定要删除这篇文章吗？"
               onConfirm={() => deleteArticle(record)}
@@ -260,7 +267,9 @@ const Article = () => {
               okText="确定"
               cancelText="取消"
             >
-              <Icon name="table-delete" />
+              <HasAuth code="content:article:delete">
+                <Icon name="table-delete" />
+              </HasAuth>
             </Popconfirm>
           </Space>
         ),
@@ -316,9 +325,11 @@ const Article = () => {
       <PageHeader title="文章管理" desc="本页用于管理和发布文章" />
       <Space size={10} orientation="vertical">
         <TableFunction onSearch={onSearch} onDateChange={onDateChange}>
-          <Button size="middle" onClick={() => handleModalVisible(true)}>
-            发布文章
-          </Button>
+          <HasAuth code="content:article:add">
+            <Button size="middle" onClick={() => handleModalVisible(true)}>
+              发布文章
+            </Button>
+          </HasAuth>
         </TableFunction>
         <Card>
           <Table
