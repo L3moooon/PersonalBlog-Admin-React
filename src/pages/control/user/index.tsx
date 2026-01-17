@@ -10,7 +10,6 @@ import {
   // deleteUser,
 } from '@/api/control/user/index';
 import type { User } from '@/api/control/user/type';
-import Icon from '@/components/Icon';
 
 const UserList = () => {
   const [queryParams, setQueryParams] = useState<CommonListRequest>({
@@ -90,15 +89,13 @@ const UserList = () => {
         title: '操作',
         dataIndex: 'actions',
         render: (_, record) => (
-          <HasAuth code="control:user:edit">
-            <Space size={8}>
-              <Switch
-                checked={record.top}
-                checkedChildren="启用"
-                unCheckedChildren="拉黑"
-                // onChange={() => updateArticleTop(record)}
-              />
-            </Space>
+          <HasAuth code="control:user:active">
+            <Switch
+              checked={record.top}
+              checkedChildren="启用"
+              unCheckedChildren="拉黑"
+              // onChange={() => updateArticleTop(record)}
+            />
           </HasAuth>
         ),
       },

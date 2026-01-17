@@ -1,10 +1,17 @@
-import { Space, Card, Table, Button, Switch, type TableProps } from 'antd';
+import {
+  Space,
+  Card,
+  Table,
+  Button,
+  Switch,
+  Flex,
+  type TableProps,
+} from 'antd';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
 
 import { getRoleList } from '@/api/control/role/index';
 import type { Role } from '@/api/control/role/type';
-import Icon from '@/components/Icon';
 import PageHeader from '@/components/PageHeader';
 import TableFunction from '@/components/TableFunction';
 import HasAuth from '@/components/HasAuth';
@@ -17,6 +24,7 @@ const RoleList = () => {
       {
         title: 'id',
         dataIndex: 'id',
+        width: '5rem',
       },
       {
         title: '角色名称',
@@ -43,8 +51,9 @@ const RoleList = () => {
       {
         title: '操作',
         dataIndex: 'actions',
+        width: '20rem',
         render: (_, record) => (
-          <Space size={8}>
+          <Flex>
             <HasAuth code="control:role:active">
               <Switch
                 checked={record.status}
@@ -54,22 +63,15 @@ const RoleList = () => {
               />
             </HasAuth>
             <HasAuth code="control:role:edit">
-              <Icon
-                name="table-edit"
-                onClick={() => {
-                  console.log(record);
-                }}
-              />
+              <Button type="link">编辑</Button>
+            </HasAuth>
+            <HasAuth code="control:role:edit">
+              <Button type="link">分配权限</Button>
             </HasAuth>
             <HasAuth code="control:role:delete">
-              <Icon
-                name="table-delete"
-                onClick={() => {
-                  console.log(record);
-                }}
-              />
+              <Button type="link">删除</Button>
             </HasAuth>
-          </Space>
+          </Flex>
         ),
       },
     ],
@@ -100,7 +102,9 @@ const RoleList = () => {
       <PageHeader title="用户管理" desc="本页用于管理后台所有注册账号" />
       <Space size={10} orientation="vertical">
         <TableFunction date={false} search={false}>
-          <Button>新增角色</Button>
+          <HasAuth code="control:role:add">
+            <Button>新增角色</Button>
+          </HasAuth>
         </TableFunction>
         <Card>
           <Table
