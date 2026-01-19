@@ -34,8 +34,11 @@ const rootReducer = combineReducers({
   setting: settingReducer,
 });
 //配置全局store
+
 export const store = configureStore({
-  reducer: persistReducer(persistConfig, rootReducer),
+  //TODO 类型问题
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reducer: persistReducer(persistConfig, rootReducer as any),
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -124,7 +124,10 @@ const VisitorMap = () => {
     if (!chartRef.current) return;
 
     // 注册地图
-    echarts.registerMap('china', chinaGeo as any);
+    echarts.registerMap(
+      'china',
+      chinaGeo as Parameters<typeof echarts.registerMap>[1]
+    );
 
     // 初始化实例
     const chartInstance = echarts.init(chartRef.current);

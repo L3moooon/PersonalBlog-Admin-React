@@ -4,11 +4,7 @@ import type { CommonListRequest } from '@/types/common';
 import { timeFormatter } from '@/utils/timeFormatter';
 import { useState, useMemo, useEffect } from 'react';
 import HasAuth from '@/components/HasAuth';
-import {
-  getAdminList,
-  // changeUserStatus,
-  // deleteUser,
-} from '@/api/control/user/index';
+import { getUserList } from '@/api/control/user/index';
 import type { User } from '@/api/control/user/type';
 
 const UserList = () => {
@@ -91,7 +87,7 @@ const UserList = () => {
         render: (_, record) => (
           <HasAuth code="control:user:active">
             <Switch
-              checked={record.top}
+              checked={record.status}
               checkedChildren="启用"
               unCheckedChildren="拉黑"
               // onChange={() => updateArticleTop(record)}
@@ -107,7 +103,7 @@ const UserList = () => {
     const fetchUserList = async () => {
       setLoading(true);
       try {
-        const { code, data, pagination } = await getAdminList(queryParams);
+        const { code, data, pagination } = await getUserList(queryParams);
         if (code === 1 && !canceled) {
           setUserList(data);
           setTotal(pagination.total);

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Flex } from 'antd';
 import { createStyles } from 'antd-style';
-import { PageTypeProvider } from './context/PageTypeContext';
+import { PageTypeProvider } from './context/PageTypeProvider';
+import type { PageType } from './types';
 
 import LoginByAccount from './LoginByAccount';
 import LoginByEmail from './LoginByEmail';
@@ -11,8 +12,6 @@ import RegisterAccount from './RegisterAccount';
 
 import { fadeOutDown, fadeUp } from '@/styles/animation';
 import backgroundImg from '@/assets/images/background.png';
-
-type PageType = 'account' | 'mail' | 'phone' | 'forget' | 'reset' | 'register';
 
 const useStyles = createStyles(() => ({
   root: {

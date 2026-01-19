@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/api';
 import type { CommonListRequest, CommonListResponse } from '@/types/common';
 
 enum API {

@@ -15,17 +15,24 @@ export interface RoleList extends CommonResponse {
   data: Array<Role>;
 }
 
-export interface UserItem {
-  id: number;
-  account: string;
-  name: string;
-  avatar: string;
-  ip: string;
-  location: string;
-  create_time: string;
-  last_login_time: string;
-  status: boolean;
+export interface AddRoleRequest {
+  role_name: string;
+  role_code: string;
+  description: string;
 }
-export interface UserListResponse extends CommonResponse {
-  data: Array<UserItem>;
+
+export interface EditRoleRequest {
+  id: number;
+  role_name: string;
+  role_code: string;
+  description: string;
+}
+
+export interface DeleteRoleRequest {
+  id: number;
+}
+
+export interface AssignPermissionRequest {
+  role_id: number;
+  permission_ids: Array<number>;
 }

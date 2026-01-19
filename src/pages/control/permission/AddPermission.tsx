@@ -10,7 +10,11 @@ interface AddPermissionProps {
   initialValues?: Permission | null;
   permissionList: Permission[];
 }
-
+interface TreePermission {
+  title: string;
+  value: number;
+  children: TreePermission[];
+}
 const AddPermission = ({
   open,
   onCancel,
@@ -23,7 +27,7 @@ const AddPermission = ({
 
   // 将扁平列表转换为树形结构以供 TreeSelect 使用
   const getTreeData = (list: Permission[]) => {
-    const map: Record<number, any> = {
+    const map: Record<number, TreePermission> = {
       0: { title: '根目录', value: 0, children: [] },
     };
     list.forEach(item => {
@@ -34,7 +38,7 @@ const AddPermission = ({
       };
     });
 
-    const tree: any[] = [map[0]];
+    const tree: TreePermission[] = [map[0]];
     list.forEach(item => {
       const parent = map[item.parent_id];
       if (parent) {
@@ -68,8 +72,8 @@ const AddPermission = ({
         ? { ...values, id: initialValues.id }
         : values;
 
-      const res = (await apiCall(payload)) as any;
-      if (res.code === 1) {
+      const { code } = await apiCall(payload);
+      if (code === 1) {
         message.success(initialValues ? '修改成功' : '添加成功');
         onSuccess();
       }

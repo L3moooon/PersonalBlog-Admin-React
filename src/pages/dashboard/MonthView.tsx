@@ -78,10 +78,12 @@ const ViewTrend = () => {
             color: 'rgba(0,0,0,0.5)', // 阴影透明度，不遮挡图表
           },
         },
-        formatter: function (params: any) {
+        formatter: function (
+          params: { axisValue: number; value: [string, number] }[]
+        ) {
           return `
           <div>${formatTimeToYearMonth(params[0].axisValue)}</div>
-          <div>本月新增用户量：${params[0].value.toString().split(',')[1]}</div>
+          <div>本月新增用户量：${params[0].value[1]}</div>
           `;
         },
       },

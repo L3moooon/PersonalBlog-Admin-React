@@ -1,8 +1,5 @@
 import request from '@/api/index';
-import type {
-  SimpleCommonListRequest,
-  CommonListResponse,
-} from '@/types/common';
+import type { SimpleCommonListRequest } from '@/types/common';
 import type { FriendshipListResponse } from './type';
 enum API {
   GET_FRIENDSHIP_LIST = '/admin/friendship/getFriendshipList', //获取友链列表

@@ -129,36 +129,36 @@ const PublishArticle = ({
   const editorConfig: Partial<IEditorConfig> = {
     placeholder: '请输入内容...',
     MENU_CONF: {
-      uploadImage: {
-        async customUpload(
-          file: File,
-          insertFn: (url: string, alt: string, href: string) => void
-        ) {
-          try {
-            const action = await dispatch(
-              uploadFile({ key: 'editor-image', file })
-            );
-            if (uploadFile.fulfilled.match(action)) {
-              const { result } = action.payload as { result: any };
-              const url = `https://oss.willisblog.com/${result.name}`;
-              insertFn(url, file.name, url);
-              messageApi.success('图片上传成功');
-            } else {
-              messageApi.error('图片上传失败');
-            }
-          } catch (error) {
-            console.error('图片上传错误:', error);
-            messageApi.error('图片上传失败，请重试');
-          }
-        },
-        allowedFileTypes: [
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-          'image/webp',
-        ],
-        maxFileSize: 2 * 1024 * 1024,
-      },
+      // uploadImage: {
+      //   async customUpload(
+      //     file: File,
+      //     insertFn: (url: string, alt: string, href: string) => void
+      //   ) {
+      //     try {
+      //       const action = await dispatch(
+      //         uploadFile({ key: 'editor-image', file })
+      //       );
+      //       if (uploadFile.fulfilled.match(action)) {
+      //         const { result } = action.payload as { result: any };
+      //         const url = `https://oss.willisblog.com/${result.name}`;
+      //         insertFn(url, file.name, url);
+      //         messageApi.success('图片上传成功');
+      //       } else {
+      //         messageApi.error('图片上传失败');
+      //       }
+      //     } catch (error) {
+      //       console.error('图片上传错误:', error);
+      //       messageApi.error('图片上传失败，请重试');
+      //     }
+      //   },
+      //   allowedFileTypes: [
+      //     'image/jpeg',
+      //     'image/png',
+      //     'image/gif',
+      //     'image/webp',
+      //   ],
+      //   maxFileSize: 2 * 1024 * 1024,
+      // },
     },
   };
 
@@ -173,16 +173,17 @@ const PublishArticle = ({
 
   // 处理封面上传
   const customUploadCover: UploadProps['customRequest'] = async options => {
-    const { file, onSuccess, onError } = options;
+    const { file, onError } = options;
     try {
       const action = await dispatch(
         uploadFile({ key: 'article-cover', file: file as File })
       );
+      console.log(action);
       if (uploadFile.fulfilled.match(action)) {
-        const { result } = action.payload as { result: any };
-        const url = `https://oss.willisblog.com/${result.name}`;
-        form.setFieldsValue({ cover_img: url });
-        onSuccess?.(result);
+        // const { result } = action.payload as { result: any };
+        // const url = `https://oss.willisblog.com/${result.name}`;
+        // form.setFieldsValue({ cover_img: url });
+        // onSuccess?.(result);
         messageApi.success('图片上传成功');
       } else {
         onError?.(new Error('上传失败'));

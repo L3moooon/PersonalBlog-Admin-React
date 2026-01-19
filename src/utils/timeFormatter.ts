@@ -11,7 +11,7 @@ export const timeFormatter = (
   // 日期无效时返回空字符串（或原始字符串，如果是字符串类型）
   if (isNaN(targetDate.getTime())) return typeof date === 'string' ? date : '';
 
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

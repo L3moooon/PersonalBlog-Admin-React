@@ -1,4 +1,4 @@
-import request from '@/api/index';
+// import request from '@/api/index';
 
 //获取所有文章列表
 //https://v1.jinrishici.com/
@@ -9,18 +9,18 @@ import request from '@/api/index';
 //     method: 'get',
 //   })
 // }
-export const getRandomPoem = () => {
-  return request({
-    url: '/external/all.txt', // 使用代理路径
-    method: 'get',
-  });
-};
+// export const getRandomPoem = () => {
+//   return request({
+//     url: '/external/all.txt', // 使用代理路径
+//     method: 'get',
+//   });
+// };
 
-export const uploadTest = (data, onUploadProgress) => {
-  return request({
-    url: '/public/uploadTest',
-    method: 'post',
-    data,
-    onUploadProgress,
-  });
-};
+// export const uploadTest = (data, onUploadProgress) => {
+//   return request({
+//     url: '/public/uploadTest',
+//     method: 'post',
+//     data,
+//     onUploadProgress,
+//   });
+// };

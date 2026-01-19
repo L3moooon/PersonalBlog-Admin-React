@@ -17,7 +17,8 @@ export const lightTheme: ThemeConfig = {
     colorLinkActive: lightColorPalettes.primary[7],
   },
 
-  algorithm: (seedToken, mapToken) => ({
+  // algorithm: (seedToken, mapToken) => ({
+  algorithm: (_, mapToken) => ({
     ...mapToken!,
     ...lightMode.tokens,
   }),

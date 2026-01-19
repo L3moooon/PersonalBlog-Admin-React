@@ -7,7 +7,7 @@ export interface TabItem {
   path: string;
   icon: string;
 }
-interface UserState {
+export interface UserState {
   userInfo: LoginResponse['user'] | null;
   token: string;
   savedAccount: string;

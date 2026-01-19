@@ -64,7 +64,6 @@ const useStyles = createStyles(({ token }) => ({
     },
   },
 
-  card: {},
   contextMenuItem: {
     display: 'flex',
     alignItems: 'center',
@@ -202,7 +201,7 @@ const TabSet = () => {
           onContextMenu={e => handleContextMenu(e, tab.path)}
         >
           <Icon name={tab.icon} />
-          <div className={styles.text}>{tab.title}</div>
+          <div>{tab.title}</div>
           {fixedTabs.includes(tab.path) && (
             <Icon
               name="main-pin"

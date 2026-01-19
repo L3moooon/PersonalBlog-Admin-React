@@ -31,7 +31,7 @@ const PermissionList = () => {
   const fetchPermissionList = useCallback(async () => {
     setLoading(true);
     try {
-      const { code, data } = (await getPermissionList()) as any;
+      const { code, data } = await getPermissionList();
       if (code === 1) {
         setPermissionList(data);
       }
@@ -59,8 +59,8 @@ const PermissionList = () => {
   const handleDelete = useCallback(
     async (id: number) => {
       try {
-        const res = (await deletePermission({ id })) as any;
-        if (res.code === 1) {
+        const { code } = await deletePermission({ id });
+        if (code === 1) {
           message.success('删除成功');
           fetchPermissionList();
         }
